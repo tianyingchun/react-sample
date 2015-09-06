@@ -70,7 +70,10 @@ module.exports = function (grunt) {
 
     var prompt = {
       options: {
-        questions: questions
+        questions: questions,
+        then: function (results, done) {
+          console.log('then().', results);
+        }
       }
     };
     Object.keys(projectCfg).forEach(function (item) {
@@ -83,14 +86,16 @@ module.exports = function (grunt) {
   };
 
   // Production build
-  grunt.registerTask('prod', function () {
+  grunt.registerTask('prod', function (moduleName) {
+    // The default module name is `default`
+    var target = moduleName || 'default';
     var prompt = {};
     Object.keys(buildConfig).forEach(function (item) {
       prompt[item] = getDefaultPrompt(item, buildConfig[item]);
     });
     grunt.config.set('prompt', prompt);
-    // console.log(JSON.stringify(grunt.config.get('prompt')))
-    grunt.task.run(['prompt']);
+
+    grunt.task.run(['prompt:' + target]);
   });
 
   // The development server (the recommended option for development)

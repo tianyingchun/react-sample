@@ -13,5 +13,12 @@ module.exports = {
       entry: './workspace/app/wslist.js',
       version: ''
     }
+  },
+  // the default module name.
+  default: {
+    home: {
+      entry: './workspace/app/member.js',
+      version: ''
+    }
   }
 };
