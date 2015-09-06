@@ -6,10 +6,9 @@ var ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 module.exports = function baseConfig() {
   return {
-    build_modules: {
     entry: {
       library: ['react', 'redux', 'react-redux'],
-      bundle: ['./app']
+      bundle: ['./workspace/app/member']
     },
     eslint: {
       quiet: true,

@@ -1,6 +1,8 @@
 var webpack = require('webpack');
+var _ = require('lodash');
 var webpackDevConfig = require('./webpack.dev.config');
 var webpackProdConfig = require('./webpack.prod.config');
+var buildConfig = require('./build.config');
 
 module.exports = function (grunt) {
 
@@ -34,54 +36,62 @@ module.exports = function (grunt) {
         }
       }
     },
-    prompt: {
-      build: {
-        options: {
-          conifg: 'build.module',
-          type: 'list',
-          message: 'which module do you like to build?'
-          questions: [{
-            default: 'custom',
-            choices: [{
-              name: 'Build:  '.yellow + '(module `member`-?)'.yellow;
-              value: 'member',
-            }, {
-              name: 'Build:  '.yellow + '(module `setting`-?)'.yellow;
-              value: 'setting',
-            }, {
-              name: 'Custom: module ?.'.yellow + '   Specify module name...',
-              value: 'custom',
-            }],
-            validate: function (value) {
-              console.log('Prompt value: ', value);
-            },
-            when: function (answers) {
-              console.log('answers: ', answers);
-            },
-            then: function (results, done) {
-
-              console.log('do some other task');
-              // done()
-            }
-          }, {
-            config: 'build.module.name',
-            type: 'input',
-            message: 'What specific module would you like',
-            when: function (answers) {
-              return answers['build.module.name'] === 'custom';
-            },
-            validate: function (value) {
-              var valid = semver.valid(value) && true;
-              return valid || 'Must be a valid semver, such as 1.2.3-rc1. See ' + 'http://semver.org/'.blue.underline + ' for more details.';
-            }
-          }]
-        }
-      }
-    }
+    prompt: {}
   });
 
   require('load-grunt-tasks')(grunt);
 
+  var getDefaultPrompt = function (projectName, projectCfg) {
+
+    var choices = [{
+      value: 'custom',
+      name: 'Custom: specify ' + projectName + ' module.',
+      checked: true
+    }];
+    var questions = [{
+      config: 'build.' + projectName,
+      type: 'list',
+      message: 'Which module do you like to build ?',
+      default: 'custom',
+      choices: choices
+    }, {
+      config: 'build.' + projectName + '.module',
+      type: 'input',
+      message: 'What specific module would you like to build?',
+      when: function (answers) {
+        return answers['build.' + projectName] === 'custom';
+      },
+      validate: function (value) {
+        var modulePath = './' + projectName + '/app/' + value + '.js';
+        var existed = grunt.file.exists(modulePath);
+        return existed || 'Must be a valid module, check ' + modulePath;
+      }
+    }];
+
+    var prompt = {
+      options: {
+        questions: questions
+      }
+    };
+    Object.keys(projectCfg).forEach(function (item) {
+      choices.push({
+        name: item,
+        value: item
+      });
+    });
+    return prompt;
+  };
+
+  // Production build
+  grunt.registerTask('prod', function () {
+    var prompt = {};
+    Object.keys(buildConfig).forEach(function (item) {
+      prompt[item] = getDefaultPrompt(item, buildConfig[item]);
+    });
+    grunt.config.set('prompt', prompt);
+    // console.log(JSON.stringify(grunt.config.get('prompt')))
+    grunt.task.run(['prompt']);
+  });
 
   // The development server (the recommended option for development)
   grunt.registerTask('default', ['webpack-dev-server:start']);
@@ -92,6 +102,4 @@ module.exports = function (grunt) {
   //               can serve an old app on too fast refresh
   grunt.registerTask('dev', ['webpack:dev', 'watch:app']);
 
-  // Production build
-  grunt.registerTask('prod', ['prompt:build' /*, 'webpack:prod'*/ ]);
 };
