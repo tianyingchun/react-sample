@@ -1,6 +1,6 @@
-[submodule "less-ui"]
-	path = less-ui
+[submodule "shared/less-ui"]
+	path = shared/less-ui
 	url = https://github.com/tianyingchun/less-ui.git
-[submodule "react-ui"]
-	path = react-ui
+[submodule "shared/react-ui"]
+	path = shared/react-ui
 	url = https://github.com/tianyingchun/react-ui.git

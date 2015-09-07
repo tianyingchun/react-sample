@@ -37,20 +37,11 @@ module.exports = function (grunt) {
         './workspace/**/*{.jsx,.js}'
       ]
     },
-    watch: {
-      app: {
-        files: ['**/*.js'],
-        tasks: ['webpack:dev'],
-        options: {
-          spawn: false,
-        }
-      }
-    },
     nodemon: {
       isomorphic: {
         script: './isomorphic',
         options: {
-          nodeArgs: [/*'--debug', '--harmony'*/],
+          nodeArgs: [ /*'--debug', '--harmony'*/ ],
           ignore: ['node_modules/**'],
           env: {
             PORT: '2000',
@@ -134,6 +125,6 @@ module.exports = function (grunt) {
   // Advantage: No server required, can run app from filesystem
   // Disadvantage: Requests are not blocked until bundle is available,
   //               can serve an old app on too fast refresh
-  grunt.registerTask('dev', ['webpack:dev', 'watch:app']);
+  grunt.registerTask('dev', ['eslint': 'webpack:dev']);
 
 };
