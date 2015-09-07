@@ -10,8 +10,8 @@ config.devtool = 'source-map';
 
 // Provider special entry point in development phase,
 // it will be able to get live reloads when doing changes to our source code.
-config.entry.bundle.unshift('webpack/hot/only-dev-server');
-config.entry.bundle.unshift('webpack-dev-server/client?http://localhost:3000');
+config.entry.member.unshift('webpack/hot/only-dev-server');
+config.entry.member.unshift('webpack-dev-server/client?http://localhost:3000');
 
 // plugins for development
 config.plugins = config.plugins.concat([

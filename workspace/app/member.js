@@ -1,14 +1,18 @@
 import React from 'react';
-import Route from 'react-router';
-import App from '../widgets/App';
-import Home from '../widgets/Home';
-import About from '../widgets/About';
+import { Provider } from 'react-redux';
+import Router from 'react-router';
+import { history } from 'react-router/lib/HashHistory';
+import routes from '../routes/member';
+import configureStore from '../stores/configureStore';
 
-export default function () {
-  return (
-    <Route component={App}>
-      <Route path='/' component={Home} />
-      <Route path='/about' component={About} />
-    </Route>
-  );
-}
+const initialState = window.__INITIAL_STATE__;
+
+const store = configureStore(initialState);
+
+const rootElement = document.getElementById('react-view');
+React.render(
+  <Provider store={store}>
+    {() => <Router children={routes()} history={history}/>}
+  </Provider>,
+  rootElement
+);

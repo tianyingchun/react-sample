@@ -86,6 +86,9 @@ module.exports = function (grunt) {
         questions: questions,
         then: function (results, done) {
           console.log('then().', results);
+          // we need to do production build here
+          grunt.task.run(['webpack:prod']);
+
         }
       }
     };
@@ -98,8 +101,8 @@ module.exports = function (grunt) {
     return prompt;
   };
 
-  // Production build
-  grunt.registerTask('prod', function (moduleName) {
+  // customized task `build` for production: [grunt build:moduleName]
+  grunt.registerTask('build', function (moduleName) {
     // The default module name is `default`
     var target = moduleName || 'default';
     var prompt = {};

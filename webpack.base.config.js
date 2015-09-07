@@ -7,8 +7,9 @@ var ExtractTextPlugin = require("extract-text-webpack-plugin");
 module.exports = function baseConfig() {
   return {
     entry: {
-      library: ['react', 'redux', 'react-redux'],
-      bundle: ['./workspace/app/member']
+      library: ['react', 'redux', 'react-redux', 'redux-logger'],
+      member: ['./workspace/app/member'],
+      setting: ['./workspace/app/setting']
     },
     module: {
       loaders: [
@@ -32,7 +33,7 @@ module.exports = function baseConfig() {
     ],
     output: {
       path: path.join(__dirname, 'public'),
-      filename: '[name].js',
+      filename: '[name]/bundle.js',
       publicPath: 'http://localhost:3000/public/'
     },
     resolve: {

@@ -1,8 +1,14 @@
 import { createStore, applyMiddleware } from 'redux';
 // import thunkMiddleware from 'redux-thunk';
-import loggerMiddleware from 'redux-logger';
+import createLogger from 'redux-logger';
 import promiseMiddleware from '../../utils/promiseMiddleware';
 import rootReducer from '../reducers';
+
+const loggerMiddleware = createLogger({
+  level: 'log',
+  collapsed: true,
+  predicate: (getState, action) => "production" !== process.env.NODE_ENV
+});
 
 const createStoreWithMiddleware = applyMiddleware(
   promiseMiddleware,
