@@ -4,7 +4,7 @@
   "description": " The react example for redux using webpack",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node isomorphic.js"
   },
   "repository": {
     "type": "git",
