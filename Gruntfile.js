@@ -30,11 +30,8 @@ module.exports = function (grunt) {
     // Eslint task for current project.
     eslint: {
       //http://eslint.org/docs/rules/
-      //https://www.npmjs.com/package/grunt-eslint
       options: {
         configFile: '.eslintrc'
-          // outputFile:''
-          // format: require('eslint-tap')
       },
       react: [
         './workspace/**/*{.jsx,.js}'
@@ -46,6 +43,22 @@ module.exports = function (grunt) {
         tasks: ['webpack:dev'],
         options: {
           spawn: false,
+        }
+      }
+    },
+    nodemon: {
+      isomorphic: {
+        script: './isomorphic',
+        options: {
+          nodeArgs: [/*'--debug', '--harmony'*/],
+          ignore: ['node_modules/**'],
+          env: {
+            PORT: '2000',
+            // for development, isomorphic server render react
+            NODE_ENV: 'development',
+            DEBUG_COLORS: true
+          },
+          ext: 'js,jsx,html,ejs'
         }
       }
     },
