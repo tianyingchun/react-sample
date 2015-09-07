@@ -1,8 +1,8 @@
-import React, {Component, PropTypes} from 'react';
-import {Link} from 'react-router';
+import React, { Component/*, PropTypes*/} from 'react';
+import { Link } from 'react-router';
 
 class App extends Component {
-  render() {
+  render () {
     return (
       <div>
         <h1>APP</h1>

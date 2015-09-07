@@ -1,7 +1,7 @@
-import React, {Component, PropTypes} from 'react';
+import React, { Component/*, PropTypes*/} from 'react';
 
 class About extends Component {
-  render() {
+  render () {
     return (
       <div>
         'About'

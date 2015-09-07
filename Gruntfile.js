@@ -27,6 +27,19 @@ module.exports = function (grunt) {
         }
       }
     },
+    // Eslint task for current project.
+    eslint: {
+      //http://eslint.org/docs/rules/
+      //https://www.npmjs.com/package/grunt-eslint
+      options: {
+        configFile: '.eslintrc'
+          // outputFile:''
+          // format: require('eslint-tap')
+      },
+      react: [
+        './workspace/**/*{.jsx,.js}'
+      ]
+    },
     watch: {
       app: {
         files: ['**/*.js'],

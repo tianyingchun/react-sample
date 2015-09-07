@@ -10,15 +10,7 @@ module.exports = function baseConfig() {
       library: ['react', 'redux', 'react-redux'],
       bundle: ['./workspace/app/member']
     },
-    eslint: {
-      quiet: true,
-      configFile: './.eslintrc'
-    },
     module: {
-      preLoaders: [
-        // ESlint
-        { test: /\.js$/, loader: "eslint-loader", exclude: /node_modules/ }
-      ],
       loaders: [
         // Extract css files
         // Use the autoprefixer-loader

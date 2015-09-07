@@ -1,6 +1,6 @@
-export function getProductById (id) {
+export function getProductById () {
   return {
     type: 'GET_PRODUCT',
-    promise: Promise.resolve({data:'teststeeste'})
-  }
+    promise: Promise.resolve({ data:'teststeeste' })
+  };
 }

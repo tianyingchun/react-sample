@@ -1,5 +1,5 @@
 import { createStore, applyMiddleware } from 'redux';
-import thunkMiddleware from 'redux-thunk';
+// import thunkMiddleware from 'redux-thunk';
 import loggerMiddleware from 'redux-logger';
 import promiseMiddleware from '../../utils/promiseMiddleware';
 import rootReducer from '../reducers';
@@ -10,6 +10,6 @@ const createStoreWithMiddleware = applyMiddleware(
 )(createStore);
 
 // Creates a preconfigured store for this example.
-export default function configureStore(initialState) {
+export default function configureStore (initialState) {
   return createStoreWithMiddleware(rootReducer, initialState);
 }

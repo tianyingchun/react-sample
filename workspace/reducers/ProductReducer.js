@@ -1,12 +1,15 @@
 const defaultState = [];
 
-export default function productReducer(state = defaultState, action) {
-  switch(action.type) {
+export default function productReducer (state = defaultState, action) {
+  let finalState = null;
+  switch (action.type) {
     case 'GET_PRODUCT':
       console.log(action);
       console.log(state);
-      return state.concat(action.res.data);
+      finalState = state.concat(action.res.data);
+      break;
     default:
-      return state;
+      finalState = state;
   }
+  return finalState;
 }

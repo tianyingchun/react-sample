@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/tianyingchun/react-redux-webpack.git"
+    "url": "https://github.com/tianyingchun/react-sample.git"
   },
   "keywords": [
     "react",
@@ -24,9 +24,9 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/tianyingchun/react-redux-webpack/issues"
+    "url": "https://github.com/tianyingchun/react-sample/issues"
   },
-  "homepage": "https://github.com/tianyingchun/react-redux-webpack#readme",
+  "homepage": "https://github.com/tianyingchun/react-sample#readme",
   "dependencies": {
     "classnames": "^2.1.2",
     "react": "^0.13.3",
@@ -48,6 +48,7 @@
     "grunt-contrib-watch": "^0.6.1",
     "grunt-prompt": "^1.3.0",
     "grunt-webpack": "~1.0.3",
+    "grunt-eslint": "^17.1.0",
     "less-loader": "^2.2.0",
     "load-grunt-tasks": "^3.2.0",
     "lodash": "^3.10.1",
