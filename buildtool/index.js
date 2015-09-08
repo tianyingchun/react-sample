@@ -13,10 +13,55 @@ var default_config = {
   }
 };
 
+/**
+ * Run webpack build while prompt flow end.
+ * @param  {Object} grunt
+ * @param  {Object} promptResult  Prompt Result.
+ * @param  {String} mode         'devBuild', 'prodBuild'
+ * @return {void}
+ */
+function runBuildTask(grunt, promptResult, mode) {
+  var buildProjectName = promptResult['list.all.projects'];
+
+  if (buildProjectName === 'build_all_projects') {
+    if (true === promptResult['build.all.project.confirm']) {
+
+      // to build all projects and it's modules.
+      grunt.log.ok('building all projects defined in ./build.config.js');
+
+      // prepare grunt-webpack configuration.
+      grunt.config.set('webpack', prepareBuildWebpackConfig(grunt, mode, {}));
+
+      // run `webpack` task
+      grunt.task.run(['webpack']);
+    } else {
+      grunt.log.ok('Task `build all projects ` cancelled');
+    }
+  } else {
+    var buildModule = promptResult['build.specific.module'];
+    grunt.log.ok('building: ', 'project[' + buildProjectName + ']' + '.' + 'module[' + buildModule + ']');
+
+    if (buildModule === 'build_all_modules') {
+      buildModule = '';
+    }
+    // prepare grunt-webpack configuration.
+    grunt.config.set('webpack', prepareBuildWebpackConfig(grunt, mode, {
+      projectName: buildProjectName,
+      moduleName: buildModule
+    }));
+
+    // run `webpack` task
+    grunt.task.run(['webpack']);
+  }
+}
 var getPromptConfig = function (grunt, projects) {
 
   // project module choices.
-  var moduleChoices = [];
+  var moduleChoices = [{
+    name: 'build_all_modules',
+    value: 'build_all_modules',
+    checked: true
+  }];
 
   // project choices.
   var projectChoices = [{
@@ -84,53 +129,22 @@ var getPromptConfig = function (grunt, projects) {
   }];
 
   var prompt = {
-    // for devBuild, prodBuild
-    build: {
+    devBuild: {
+      // for `devBuild` prompt.
       options: {
         questions: questions,
         then: function (results, done) {
           // console.log('then().', results);
-          var buildProjectName = results['list.all.projects'];
-
-          if (buildProjectName === 'build_all_projects') {
-            if (true === results['build.all.project.confirm']) {
-              // TODO, to build all projects and it's modules.
-              grunt.log.ok('building all projects defined in ./build.config.js');
-
-              prepareBuildWebpackConfig('prodBuild', {});
-
-              // we need to do production build here
-              // grunt.task.run(['webpack']);
-            } else {
-              grunt.log.ok('Task `build all projects ` cancelled');
-            }
-          } else {
-            var buildModule = results['build.specific.module'];
-            grunt.log.ok('building: ', 'project[' + buildProjectName + ']' + '.' + 'module[' + buildModule + ']');
-
-            // prepare build webpack config.
-            prepareBuildWebpackConfig('prodBuild', {
-              projectName: buildProjectName,
-              moduleName: buildModule
-            });
-
-            // var webpackConfig = grunt.config.get('webpack');
-            // var prod = webpackConfig.prod;
-            // prod.entry = _.pick(prod.entry, ['library', buildModule]);
-            // grunt.config.set('webpack', webpackConfig);
-            // console.log(grunt.config.get('webpack').prod)
-            // grunt.task.run(['webpack']);
-          }
-
+          runBuildTask(grunt, results, 'devBuild');
         }
       }
     },
-    devServer: {
-      // for dev hot server.
+    prodBuild: {
+      // for `prodBuild` prompt.
       options: {
         questions: questions,
         then: function (results, done) {
-
+          runBuildTask(grunt, results, 'prodBuild');
         }
       }
     }
@@ -140,12 +154,80 @@ var getPromptConfig = function (grunt, projects) {
 };
 
 /**
- * Dynamic prepare webpack grunt config section
- * @param  {String} mode 'prodBuild', 'devBuild', 'devServer'
- * @param  {Objeect} config      can be {} || {projectName:'', moduleName:''}
- * @return {void}
+ * get specificed webpack via various conditions.
+ * @param  {String} mode        'devServer','devBuild','prodBuild'
+ * @param  {Object} projects     projects defined in build.config.js
+ * @return {Object}              webpack configuration
  */
-function prepareBuildWebpackConfig(mode, config) {
+function getWebpackConfig(mode, projects) {
+  var result = {};
+
+  // The webpack dev server socket config for development phase.
+  var dev_server_entry = [
+    'webpack-dev-server/client?' + url.format({
+      protocol: 'http',
+      hostname: default_config.devServer.host,
+      port: default_config.devServer.port
+    }), 'webpack/hot/only-dev-server'
+  ];
+
+  Object.keys(projects).forEach(function (projectName) {
+    var webpack = null;
+    var project = projects[projectName];
+
+    switch (mode) {
+      // hot dev server
+      case 'devServer':
+        webpack = webpackDevConfig();
+        webpack.output.path = default_config.built.baseDir;
+
+        // override webpack.entry
+        _.extend(webpack.entry, project, function (dist, source) {
+          if (source) {
+            return dev_server_entry.concat([source.entry]);
+          }
+        });
+
+        break;
+      case 'devBuild':
+        webpack = webpackDevConfig();
+        webpack.output.path = path.join(default_config.built.baseDir, 'debug');
+
+        // override webpack.entry
+        _.extend(webpack.entry, project, function (dist, source) {
+          if (source) {
+            return [source.entry];
+          }
+        });
+
+        break;
+      case 'prodBuild':
+        webpack = webpackProdConfig();
+        webpack.output.path = default_config.built.baseDir;
+
+        // override webpack.entry
+        _.extend(webpack.entry, project, function (dist, source) {
+          if (source) {
+            return [source.entry];
+          }
+        });
+
+        break;
+    }
+    webpack.output.filename = path.join(projectName, webpack.output.filename);
+
+    result[projectName] = webpack;
+  });
+  return result;
+}
+/**
+ * Dynamic prepare webpack grunt config section
+ * @param  {Object} grunt
+ * @param  {String} mode        'devServer','devBuild','prodBuild'
+ * @param  {Object} config      can be {} || { projectName:'', moduleName:'' }
+ * @return {Object}              webpack configuration
+ */
+function prepareBuildWebpackConfig(grunt, mode, config) {
 
   var buildProjects = buildConfig.projects || {};
   var projectName = config.projectName;
@@ -153,84 +235,35 @@ function prepareBuildWebpackConfig(mode, config) {
 
   // specificed project name.
   if (projectName) {
-    buildProjects = buildProjects[projectName] || {};
+    if (!buildProjects[projectName]) {
+      grunt.fail.fatal('The project `' + projectName + '` can not be fund in build.config.js')
+      return;
+    }
+    buildProjects = _.pick(buildProjects, [projectName]);
   }
+
   // specificed module name.
   if (moduleName) {
-    buildProjects = _.pick(buildProjects, [moduleName]);
+    if (!buildProjects[projectName][moduleName]) {
+      grunt.fail.fatal('The project `' + projectName + '`.`' + moduleName + '` can not be fund in build.config.js')
+      return;
+    }
+    buildProjects[projectName] = _.pick(buildProjects[projectName], [moduleName]);
   }
 
-  var webpackConfig = {};
+  var webpack = getWebpackConfig(mode, buildProjects);
 
-  switch (mode) {
-    case 'devBuild':
-      Object.keys(buildProjects).forEach(function (projectName) {
-        var project = buildProjects[projectName];
-        var config = webpackDevConfig();
-        // build output physic directory.
-        config.output.path = path.join(default_config.built.baseDir, 'debug');
-        config.output.filename = path.join(projectName, config.output.filename);
-        // override webpack.dev.config.js
-        _.extend(config.entry, project, function (dist, source) {
-          if (source) {
-            return [source.entry];
-          }
-        });
-        webpackConfig[projectName] = config;
-      });
-      break;
-    case 'prodBuild':
-      Object.keys(buildProjects).forEach(function (projectName) {
-        var project = buildProjects[projectName];
-        var config = webpackProdConfig();
-        console.log('config: ', webpackProdConfig)
+  // console.log('webpackConfig:', JSON.stringify(webpack))
 
-        // build output physic directory.
-        config.output.path = default_config.built.baseDir;
-        config.output.filename = path.join(projectName, config.output.filename);
-        // override webpack.prod.config.js
-        _.extend(config.entry, project, function (dist, source) {
-          if (source) {
-            return [source.entry];
-          }
-        });
-        webpackConfig[projectName] = config;
-      });
-      break;
-    case 'devServer':
-      // The webpack dev server socket config for development phase.
-      var entry_dev_server = [
-        'webpack-dev-server/client?' + url.format({
-          protocol: 'http',
-          hostname: default_config.devServer.host,
-          port: default_config.devServer.port
-        }), 'webpack/hot/only-dev-server'
-      ];
-
-      Object.keys(buildProjects).forEach(function (projectName) {
-        var project = buildProjects[projectName];
-        var config = webpackDevConfig();
-        // build output physic directory.
-        config.output.path = path.join(default_config.built.baseDir, 'debug');
-        config.output.filename = path.join(projectName, config.output.filename);
-        // override webpack.dev.config.js
-        _.extend(config.entry, project, function (dist, source) {
-          if (source) {
-            return entry_dev_server.concat([source.entry]);
-          }
-        });
-        webpackConfig[projectName] = config;
-      });
-
-      break;
-  }
-
-  console.log('webpackConfig:', JSON.stringify(webpackConfig))
-
+  return webpack;
 }
 
-
-
+/**
+ * Initialize build configurations
+ * @param  {Object} grunt
+ * @param  {Object} options the build options
+ * @return {void}
+ */
 function initBuildCfg(grunt, options) {
 
   // default build config dependancy.
@@ -254,57 +287,75 @@ function initBuildCfg(grunt, options) {
   var buildProjects = buildConfig.projects || {};
   var buildConfigOptions = buildConfig.options || {};
 
+  // merge build config options.
   _.extend(default_config, buildConfigOptions, options);
 
-  // set promp config for grunt.
+  // set grunt prompt config
   grunt.config.set('prompt', getPromptConfig(grunt, buildProjects));
 
 }
 
 // grunt `webpack-dev-server` task. required grunt-webpack task.
-function registerWebpackDevServerTask(grunt) {
-  grunt.registerTask('hotDevServer', function (projectName) {
-
-    console.log('projectName: ', projectName);
-
-    grunt.config.set('webpack-dev-server', {
+function registerWebpackHotDevServerTask(grunt) {
+  grunt.registerTask('hot_dev_server', function (projectName) {
+    if (!buildConfig.projects[projectName]) {
+      grunt.fail.fatal('The project `' + projectName + '` can not be fund in build.config.js')
+      return;
+    }
+    var config = {
       options: {
-        webpack: webpackDevConfig,
+        webpack: prepareBuildWebpackConfig(grunt, 'devServer', {
+          projectName: projectName
+        })[projectName],
         publicPath: default_config.devServer.publicPath
-      },
-      start: {
-        keepAlive: true,
-        hot: true,
-        historyApiFallback: true,
-        host: default_config.devServer.host,
-        port: default_config.devServer.port,
-        stats: {
-          colors: true
-        }
       }
-    });
+    };
+
+    config[projectName] = {
+      keepAlive: true,
+      hot: true,
+      historyApiFallback: true,
+      host: default_config.devServer.host,
+      port: default_config.devServer.port,
+      stats: {
+        colors: true
+      }
+    };
+    grunt.config.set('webpack-dev-server', config);
+
+    // run prompt devServer build flow for local development phase.
+    grunt.task.run(['webpack-dev-server:' + projectName]);
+
   });
 }
-
+/**
+ * Register grunt task `webpack_build:` based on webpack
+ * @param  {Object} grunt
+ * @return {void}
+ */
 function registerWebpackBuildTask(grunt) {
 
   if (grunt.task.exists('webpack_build')) {
     grunt.fail.fatal('the grunt `webpack_build` task has been existed, build engine initial failed.');
     return;
   }
-  // customized `build` task for production, development: [grunt prodBuild, grunt devBuild]
+  // customize `build` task for production
+  // development: [grunt prodBuild, grunt devBuild]
   grunt.registerTask('webpack_build', function (mode) {
-
-    var mode = mode ? 'dev' : 'prod';
 
     grunt.log.ok('----Run task `webpack_build` model: `' + mode + '`----');
 
-    if (mode === 'dev') {
-      // run development build directly.
-      grunt.task.run([]);
-    } else {
-      // run prompt build flow for production build.
-      grunt.task.run(['prompt:build']);
+    switch (mode) {
+      case 'devBuild':
+        // run dev build with `sourcemap`.
+        grunt.task.run(['prompt:devBuild']);
+        break;
+      case 'prodBuild':
+        // run prod build flow for production build.
+        grunt.task.run(['prompt:prodBuild']);
+        break;
+      default:
+        grunt.fail.fatal('Can not supports task `webpack_build:' + mode + '`');
     }
   });
 }
@@ -314,9 +365,9 @@ module.exports = function (grunt, options) {
   // initialize build configurations.
   initBuildCfg(grunt, options);
 
-
-  registerWebpackDevServerTask(grunt);
-
-  // register customized `build` task.
+  // bind customized `build` task.
   registerWebpackBuildTask(grunt);
+
+  // bind webpack dev server task.
+  registerWebpackHotDevServerTask(grunt);
 };

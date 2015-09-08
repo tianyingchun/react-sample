@@ -17,7 +17,7 @@ module.exports = {
     workspace: {
       member: {
         entry: './workspace/app/member.js',
-        version: '',
+        version: '', //maybe: cdn.xx.com/public/workspace/member/bundle.js?v=version
         js: ['workspace/member/${version}/bundle.common.js', 'workspace/member/${version}/bundle.js'],
         css: ['workspace/member/${version}/bundle.common.css', 'workspace/member/${version}/bundle.css']
       },
