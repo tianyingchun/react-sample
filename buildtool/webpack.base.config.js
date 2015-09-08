@@ -19,7 +19,9 @@ module.exports = function baseConfig() {
         // extract less files using stylus loader
         { test: /\.styl$/, loader: ExtractTextPlugin.extract("style-loader", "css-loader!autoprefixer-loader!stylus-loader")},
         // Optionally extract less files using less loader
-        { test: /\.less$/, loader: ExtractTextPlugin.extract("style-loader", "css-loader!autoprefixer-loader!less-loader")}
+        { test: /\.less$/, loader: ExtractTextPlugin.extract("style-loader", "css-loader!autoprefixer-loader!less-loader")},
+
+        { test: /\.jpg|png$/, loader: "file-loader?name=./assets/[name].[ext]" }
       ]
     },
     plugins: [

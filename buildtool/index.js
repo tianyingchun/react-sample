@@ -109,7 +109,7 @@ var getPromptConfig = function (grunt, projects) {
       return !buildAllProject;
     },
     validate: function (value) {
-      console.log('module', value);
+      console.log('module:', value);
       var modulePath = path.normalize(path.join('./', '', '/app/', value, '.js'));
       var existed = grunt.file.exists('modulePath');
       return existed || 'Must be a valid module, check ' + modulePath;
@@ -124,7 +124,7 @@ var getPromptConfig = function (grunt, projects) {
       return answer === 'build_all_projects';
     },
     validate: function (value) {
-      console.log('confirm validate', value);
+      console.log('confirm validate:', value);
     }
   }];
 
@@ -225,7 +225,6 @@ function getWebpackConfig(mode, projects) {
 
     result[projectName] = webpack;
   });
-    console.log(JSON.stringify(result))
 
   return result;
 }
