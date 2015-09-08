@@ -1,24 +1,34 @@
+var path = require('path');
 module.exports = {
-  // project name.
-  workspace: {
-    member: {
-      entry: './workspace/app/member.js',
-      version: ''
+  // the optional configurations.
+  options: {
+    devServer: {
+      host: 'localhost',
+      port: 3000,
+      publicPath: 'http://localhost:3000/public/'
     },
-    setting: {
-      entry: './workspace/app/setting.js',
-      version: ''
+    built: {
+      // where the built files should be placed?
+      baseDir: path.join(__dirname, 'public')
     },
-    wslist: {
-      entry: './workspace/app/wslist.js',
-      version: ''
-    }
+    cdnRoot: 'http://cdn.adsponsor.com/front/'
   },
-  // the default module name.
-  default: {
-    home: {
-      entry: './workspace/app/member.js',
-      version: ''
+  projects: {
+    workspace: {
+      member: {
+        entry: './workspace/app/member.js',
+        version: '',
+        js: ['workspace/member/${version}/bundle.common.js', 'workspace/member/${version}/bundle.js'],
+        css: ['workspace/member/${version}/bundle.common.css', 'workspace/member/${version}/bundle.css']
+      },
+      setting: {
+        entry: './workspace/app/setting.js',
+        version: ''
+      },
+      wslist: {
+        entry: './workspace/app/wslist.js',
+        version: ''
+      }
     }
   }
 };

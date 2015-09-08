@@ -103,7 +103,7 @@
     "no-new-object": 2,
     "no-spaced-func": 2,
     "no-trailing-spaces": 2,
-    "no-underscore-dangle": 2,
+    "no-underscore-dangle": 0,
     "no-extra-parens": [2,'functions'],
     "quote-props": [1, "as-needed"],
     "quotes": [1, "single"],

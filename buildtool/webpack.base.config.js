@@ -7,9 +7,9 @@ var ExtractTextPlugin = require("extract-text-webpack-plugin");
 module.exports = function baseConfig() {
   return {
     entry: {
+      // for convenience, we should always define libaray as react-kits entry.
       library: ['react', 'redux', 'react-redux', 'redux-logger'],
-      member: ['./workspace/app/member'],
-      setting: ['./workspace/app/setting']
+      // customized module entry definitions.
     },
     module: {
       loaders: [
@@ -27,14 +27,13 @@ module.exports = function baseConfig() {
       new ExtractTextPlugin("[name].css"),
       new webpack.optimize.CommonsChunkPlugin({
         name: 'library',
-        filename: 'react-kits.js',
+        filename: 'reactkits.js',
         minChunks: Infinity
       })
     ],
     output: {
       path: path.join(__dirname, 'public'),
       filename: '[name]/bundle.js',
-      publicPath: 'http://localhost:3000/public/'
     },
     resolve: {
       extensions: ['', '.js']

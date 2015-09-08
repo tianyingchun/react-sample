@@ -1,17 +1,15 @@
 'use strict';
 
 var webpack = require('webpack');
-var baseConfig = require('./webpack.base.config');
-
-var config = baseConfig();
+var config = require('./webpack.base.config')();
 
 // Add source mapping for debuging.
 config.devtool = 'source-map';
 
 // Provider special entry point in development phase,
 // it will be able to get live reloads when doing changes to our source code.
-config.entry.member.unshift('webpack/hot/only-dev-server');
-config.entry.member.unshift('webpack-dev-server/client?http://localhost:3000');
+// config.entry.member.unshift('webpack/hot/only-dev-server');
+// config.entry.member.unshift('webpack-dev-server/client?http://localhost:3000');
 
 // plugins for development
 config.plugins = config.plugins.concat([
@@ -28,4 +26,6 @@ config.module.loaders.push({
   exclude: /node_modules/
 });
 
-module.exports = config;
+module.exports = function () {
+  return config;
+};

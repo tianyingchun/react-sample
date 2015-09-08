@@ -1,9 +1,7 @@
 'use strict';
 
 var webpack = require('webpack');
-var baseConfig = require('./webpack.base.config');
-
-var config = baseConfig();
+var config = require('./webpack.base.config')();
 
 // plugins for production
 config.plugins = config.plugins.concat([
@@ -30,4 +28,6 @@ config.module.loaders.push({
   exclude: /node_modules/
 });
 
-module.exports = config;
+module.exports = function () {
+  return config;
+};
