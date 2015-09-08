@@ -1,4 +1,5 @@
 import React, { Component/*, PropTypes*/} from 'react';
+import '../stylesheets/index.css';
 
 class About extends Component {
   render () {

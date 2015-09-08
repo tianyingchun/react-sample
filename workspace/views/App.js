@@ -1,5 +1,6 @@
 import React, { Component/*, PropTypes*/} from 'react';
 import { Link } from 'react-router';
+import '../stylesheets/sample-stylus.styl';
 
 class App extends Component {
   render () {

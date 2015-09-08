@@ -214,10 +214,19 @@ function getWebpackConfig(mode, projects) {
 
         break;
     }
+
+    var oExtractTextPlugin = _.find(webpack.plugins, function (item) {
+      return 'ExtractTextPlugin' === item.constructor.name;
+    });
+
+    // mapping real path to corresponding project.
+    oExtractTextPlugin.filename = path.join(projectName, oExtractTextPlugin.filename);
     webpack.output.filename = path.join(projectName, webpack.output.filename);
 
     result[projectName] = webpack;
   });
+    console.log(JSON.stringify(result))
+
   return result;
 }
 /**

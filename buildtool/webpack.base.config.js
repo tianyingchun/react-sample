@@ -24,7 +24,7 @@ module.exports = function baseConfig() {
     },
     plugins: [
       new webpack.optimize.OccurenceOrderPlugin(),
-      new ExtractTextPlugin("[name].css"),
+      new ExtractTextPlugin("[name]/bundle.css"),
       new webpack.optimize.CommonsChunkPlugin({
         name: 'library',
         filename: 'reactkits.js',

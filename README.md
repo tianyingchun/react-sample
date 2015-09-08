@@ -6,3 +6,10 @@ Forked from my another project [react-redux-webpack](https://github.com/tianying
 -----------
 
 - [react-redux-webpack](https://github.com/tianyingchun/react-redux-webpack.git)
+
+
+The command
+-----------
+- grunt devBuild (build development version bundle with sourcemap)
+- grunt prodBuild
+- grunt hotDevServer:{projectName}
