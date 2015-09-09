@@ -37,18 +37,18 @@ module.exports = function (grunt) {
   // Dependency `buildtool`
   // Build development version with bundle.js with source map to target built directory.
   // Normally we don't need run this task, unless you want to debug built file in another remote merchine without dev-hot-server.
-  grunt.registerTask('devBuild', 'The costomized webpack development build task ', function () {
+  grunt.registerTask('dev-build', 'The costomized webpack development build task ', function () {
     grunt.task.run(['eslint', 'webpack_build:devBuild']);
   });
 
   // Wraper buildtool `webpack_build` task.
   // Dependency `buildtool`
-  grunt.registerTask('prodBuild', 'The customized webpack production build task', function () {
+  grunt.registerTask('prod-build', 'The customized webpack production build task', function () {
     grunt.task.run(['webpack_build:prodBuild']);
   });
 
-  // The development server (the recommended option for development)
-  grunt.registerTask('hotDevServer', 'The customized webpack hot dev server task', function (projectName) {
+  // The local debugging mode 'hot dev server' using webpack-dev-server
+  grunt.registerTask('hot', 'The customized webpack hot dev server task', function (projectName) {
     if (!projectName) {
       grunt.fail.fatal('you must provider project you for dev server');
     }

@@ -175,7 +175,8 @@ function getWebpackConfig(mode, projects) {
         webpack.output.publicPath = default_config.assets.dev;
 
         // Add source mapping for debuging.
-        webpack.devtool = 'eval';
+        // webpack.devtool = 'eval';
+        // use sourcemap, convenient for debugging.
         // override webpack.entry
         _.extend(webpack.entry, project, function (dist, source) {
           if (source) {
