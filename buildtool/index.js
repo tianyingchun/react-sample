@@ -172,6 +172,8 @@ function getWebpackConfig(mode, projects) {
       case 'devServer':
         webpack = webpackDevConfig();
         webpack.output.path = default_config.built.baseDir;
+        webpack.output.publicPath = default_config.assets.dev;
+
         // Add source mapping for debuging.
         webpack.devtool = 'eval';
         // override webpack.entry
@@ -185,6 +187,7 @@ function getWebpackConfig(mode, projects) {
       case 'devBuild':
         webpack = webpackDevConfig();
         webpack.output.path = path.join(default_config.built.baseDir, 'debug');
+        webpack.output.publicPath = default_config.assets.dev;
 
         // override webpack.entry
         _.extend(webpack.entry, project, function (dist, source) {
@@ -197,6 +200,7 @@ function getWebpackConfig(mode, projects) {
       case 'prodBuild':
         webpack = webpackProdConfig();
         webpack.output.path = default_config.built.baseDir;
+        webpack.output.publicPath = default_config.assets.prod;
 
         // override webpack.entry
         _.extend(webpack.entry, project, function (dist, source) {
@@ -217,12 +221,15 @@ function getWebpackConfig(mode, projects) {
     });
 
     // Set dist location for transfer url resources.
-    // oModuleUrlLoader.query.name = path.join(projectName, oModuleUrlLoader.query.name );
+    _.extend(oModuleUrlLoader.query, _.mapValues(default_config.assets.urlLoaderQuery, function (val) {
+      return _.template(val)({
+        projectName: projectName
+      });
+    }));
 
     // mapping real path to corresponding project.
     oExtractTextPlugin.filename = path.join(projectName, oExtractTextPlugin.filename);
     webpack.output.filename = path.join(projectName, webpack.output.filename);
-
     result[projectName] = webpack;
   });
 

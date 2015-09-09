@@ -11,7 +11,16 @@ module.exports = {
       // where the built files should be placed?
       baseDir: path.join(__dirname, 'public')
     },
-    cdnRoot: 'http://cdn.adsponsor.com/front/'
+    // assets public path (stylesheets,...)
+    assets: {
+      // the urlLoaderQuery used in buildtool/webpack.base.config.js <url-loader> config node.
+      urlLoaderQuery: {
+        context: '${projectName}/stylesheets',
+        name: '${projectName}/[path][name].[ext]'
+      },
+      dev: 'http://localhost:3000/public/',
+      prod: 'http://cdn.xx.com/public/'
+    }
   },
   projects: {
     workspace: {

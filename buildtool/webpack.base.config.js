@@ -22,7 +22,7 @@ module.exports = function baseConfig() {
         { test: /\.less$/, loader: ExtractTextPlugin.extract("style-loader", "css-loader!autoprefixer-loader!less-loader") },
 
         // inline base64 URLs for <=5k images, direct URLs for the rest, >-5k leave asset file to dist dir.
-        { test: /\.(png|jpg)$/, loader: "url-loader", query:{ limit: 5000, context:'workspace', name:'[path][name].[ext]' } }
+        { test: /\.(png|jpg)$/, loader: "url-loader", query:{ limit: 5000, context:'${projectName}/stylesheets', name:'${projectName}/[path][name].[ext]' } }
       ]
     },
     plugins: [
@@ -36,7 +36,8 @@ module.exports = function baseConfig() {
     ],
     output: {
       path: path.join(__dirname, 'public'),
-      filename: '[name]/bundle.js',
+      filename: '[name]/bundle.js'
+      // publicPath: 'http://cdn.xx.com/public/'
     },
     resolve: {
       extensions: ['', '.js']
