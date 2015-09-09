@@ -55,14 +55,14 @@ function handleRender(req, res) {
           <head>
             <meta charset="utf-8">
             <title>Redux Demo</title>
-            <link rel="stylesheet" type="text/css" href="/public/workspace/member/bundle.css">
+            <link rel="stylesheet" type="text/css" href="http://localhost:3000/public/workspace/member/bundle.css">
             <script>window.__INITIAL_STATE__ = ${JSON.stringify(initialState)};</script>
           </head>
           <body>
             <div id="react-view">${componentHTML}</div>
-            <script src="/public/browser-polyfill.js"></script>
-            <script src="/public/reactkits.js"></script>
-            <script src="/public/workspace/member/bundle.js"></script>
+            <script src="http://localhost:3000/public/browser-polyfill.js"></script>
+            <script src="http://localhost:3000/public/reactkits.js"></script>
+            <script src="http://localhost:3000/public/workspace/member/bundle.js"></script>
           </body>
         </html>
       `;
