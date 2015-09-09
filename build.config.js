@@ -38,12 +38,6 @@ module.exports = {
         entry: './workspace/app/wslist.js',
         version: ''
       }
-    },
-    document: {
-      setting: {
-        entry: './workspace/app/setting.js',
-        version: ''
-      }
     }
   }
 };
