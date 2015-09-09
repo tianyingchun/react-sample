@@ -176,7 +176,7 @@ function getWebpackConfig(mode, projects) {
 
         // Add source mapping for debuging.
         // use sourcemap, convenient for debugging.
-          webpack.devtool = 'eval-source-map';
+        webpack.devtool = 'eval-source-map';
 
         // override webpack.entry
         _.extend(webpack.entry, project, function (dist, source) {
@@ -306,6 +306,17 @@ function initBuildCfg(grunt, options) {
 
   // merge build config options.
   _.extend(default_config, buildConfigOptions, options);
+
+  // simple validation if project existed local work desk.
+  Object.keys(buildProjects).forEach(function (projectName) {
+    var projectLocalDir = path.join(__dirname, '..', projectName);
+    if (!grunt.file.isDir(projectLocalDir)) {
+      grunt.fail.fatal('The project `' + projectName + '` found in ./build.config.js but not real existed in' + projectLocalDir);
+      delete buildProjects[projectName];
+      // skip this project config if the project it not exist.
+      return;
+    }
+  });
 
   // set grunt prompt config
   grunt.config.set('prompt', getPromptConfig(grunt, buildProjects));
