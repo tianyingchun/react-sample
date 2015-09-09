@@ -9,7 +9,12 @@ module.exports = function () {
   config.plugins = config.plugins.concat([
     new webpack.NoErrorsPlugin(),
     new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify('production')
+      'process.env.NODE_ENV': JSON.stringify('production'),
+      // for isomophic server ignore import stylesheet.
+      // if (process.env.BROWSER) {
+      //   require("./style.css");
+      // }
+      'process.env.BROWSER': JSON.stringify(true),
     }),
     new webpack.optimize.UglifyJsPlugin({
       sourceMap: false,

@@ -1,6 +1,8 @@
 import React, { Component/*, PropTypes*/} from 'react';
-import '../stylesheets/index.css';
 
+if (process.env.BROWSER) {
+  require('../stylesheets/index.css');
+}
 class About extends Component {
   render () {
     return (

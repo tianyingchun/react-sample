@@ -1,7 +1,8 @@
 import React, { Component/*, PropTypes*/} from 'react';
 import { Link } from 'react-router';
-import '../stylesheets/sample-stylus.styl';
-
+if (process.env.BROWSER) {
+  require('../stylesheets/sample-stylus.styl');
+}
 class App extends Component {
   render () {
     return (
