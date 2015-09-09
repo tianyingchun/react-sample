@@ -107,12 +107,6 @@ var getPromptConfig = function (grunt, projects) {
 
       }
       return !buildAllProject;
-    },
-    validate: function (value) {
-      console.log('module:', value);
-      var modulePath = path.normalize(path.join('./', '', '/app/', value, '.js'));
-      var existed = grunt.file.exists('modulePath');
-      return existed || 'Must be a valid module, check ' + modulePath;
     }
   }, {
     config: 'build.all.project.confirm',
@@ -120,11 +114,9 @@ var getPromptConfig = function (grunt, projects) {
     message: 'Are you sure you need to compile all projects at a time?',
     when: function (answers) {
       var answer = answers['list.all.projects'];
+
       // if we will build all project need second confirm.
       return answer === 'build_all_projects';
-    },
-    validate: function (value) {
-      console.log('confirm validate:', value);
     }
   }];
 
@@ -180,7 +172,8 @@ function getWebpackConfig(mode, projects) {
       case 'devServer':
         webpack = webpackDevConfig();
         webpack.output.path = default_config.built.baseDir;
-
+        // Add source mapping for debuging.
+        webpack.devtool = 'eval';
         // override webpack.entry
         _.extend(webpack.entry, project, function (dist, source) {
           if (source) {
@@ -218,6 +211,13 @@ function getWebpackConfig(mode, projects) {
     var oExtractTextPlugin = _.find(webpack.plugins, function (item) {
       return 'ExtractTextPlugin' === item.constructor.name;
     });
+
+    var oModuleUrlLoader = _.find(webpack.module.loaders, function (item) {
+      return item.loader === 'url-loader';
+    });
+
+    // Set dist location for transfer url resources.
+    // oModuleUrlLoader.query.name = path.join(projectName, oModuleUrlLoader.query.name );
 
     // mapping real path to corresponding project.
     oExtractTextPlugin.filename = path.join(projectName, oExtractTextPlugin.filename);
@@ -355,10 +355,12 @@ function registerWebpackBuildTask(grunt) {
 
     switch (mode) {
       case 'devBuild':
+
         // run dev build with `sourcemap`.
         grunt.task.run(['prompt:devBuild']);
         break;
       case 'prodBuild':
+
         // run prod build flow for production build.
         grunt.task.run(['prompt:prodBuild']);
         break;
