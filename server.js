@@ -37,7 +37,10 @@ function handleRender(req, res) {
 
   Router.run(routes(), location, (error, routeState, transition) => {
 
-    const head = React.renderToString(React.createFactory(Head)());
+    const links = [
+      'http://localhost:3000/public/workspace/member/bundle.css'
+    ];
+    const head = React.renderToString(React.createFactory(Head)({links}));
 
     function renderView() {
       const InitialView = (
@@ -57,7 +60,6 @@ function handleRender(req, res) {
         <html>
           ${head}
           <body>
-            <link rel="stylesheet" type="text/css" href="http://localhost:3000/public/workspace/member/bundle.css">
             <script>window.__INITIAL_STATE__ = ${JSON.stringify(initialState)};</script>
             <div id="react-view">${componentHTML}</div>
             <script src="http://localhost:3000/public/browser-polyfill.js"></script>
