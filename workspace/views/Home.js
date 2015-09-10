@@ -1,23 +1,28 @@
 import React, { Component/*, PropTypes*/} from 'react';
 import * as ProductActions from '../actions/ProductAtions';
 import { connect } from 'react-redux';
+import DocumentMeta from 'react-document-meta';
 
 if (process.env.BROWSER) {
   require('../stylesheets/sample-less.less');
 }
 
-@connect(state => ({ product: state.product }))
 export default class Home extends Component {
 
-  static needs = [
-    ProductActions.getProductById
-  ]
-
   render () {
+    const meta = {
+      title: 'SNS Platform',
+      description: 'SNS Platform',
+      meta: {
+        name: {
+          keywords: 'SNS Platform'
+        }
+      }
+    };
     return (
       <div>
-        Home
-        {this.props.product}
+        <DocumentMeta {...meta}/>
+        <div> Home </div>
       </div>
     );
   }

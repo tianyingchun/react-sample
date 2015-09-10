@@ -13,6 +13,7 @@ import Location from 'react-router/lib/Location';
 
 import configureStore from './workspace/stores/configureStore';
 import fetchComponentData from './utils/fetchComponentData';
+import Head from './workspace/views/Head';
 
 const app = express();
 const port = process.env.PORT || 40000;
@@ -36,6 +37,8 @@ function handleRender(req, res) {
 
   Router.run(routes(), location, (error, routeState, transition) => {
 
+    const head = React.renderToString(React.createFactory(Head)());
+
     function renderView() {
       const InitialView = (
         <Provider store={store}>
@@ -52,13 +55,10 @@ function handleRender(req, res) {
       const HTML = `
         <!DOCTYPE html>
         <html>
-          <head>
-            <meta charset="utf-8">
-            <title>Redux Demo</title>
+          ${head}
+          <body>
             <link rel="stylesheet" type="text/css" href="http://localhost:3000/public/workspace/member/bundle.css">
             <script>window.__INITIAL_STATE__ = ${JSON.stringify(initialState)};</script>
-          </head>
-          <body>
             <div id="react-view">${componentHTML}</div>
             <script src="http://localhost:3000/public/browser-polyfill.js"></script>
             <script src="http://localhost:3000/public/reactkits.js"></script>

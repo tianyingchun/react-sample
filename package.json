@@ -33,6 +33,7 @@
     "cors": "^2.7.1",
     "express": "^4.13.3",
     "react": "^0.13.3",
+    "react-document-meta": "^1.0.1",
     "react-redux": "^0.2.2",
     "react-router": "1.0.0-beta3",
     "redux": "^1.0.0-rc",
