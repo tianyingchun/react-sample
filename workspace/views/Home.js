@@ -1,6 +1,4 @@
-import React, { Component/*, PropTypes*/} from 'react';
-import * as ProductActions from '../actions/ProductAtions';
-import { connect } from 'react-redux';
+import React, { Component } from 'react';
 import DocumentMeta from 'react-document-meta';
 
 if (process.env.BROWSER) {
