@@ -5,8 +5,7 @@ import promiseMiddleware from '../../utils/promiseMiddleware';
 import finalReducers from '../reducers';
 
 const loggerMiddleware = createLogger({
-  level: 'log',
-  collapsed: true,
+  collapsed: false,
   predicate: (/*getState, action*/) => 'production' !== process.env.NODE_ENV
 });
 
