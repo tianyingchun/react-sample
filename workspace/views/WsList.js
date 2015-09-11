@@ -39,7 +39,7 @@ class WsList extends Component {
         <ReactButton loading={ loadingTxt }/>
         { /*<DocumentMeta {...meta}/> */ }
         <WorkspaceList workspaces= { workspaces.list || workspaces } />
-        <button onClick={action.getExistedWsList}>trigger add</button>
+        <button onClick={() => action.getExistedWsList('workspaceId')}>trigger add</button>
       </div>
     );
   }

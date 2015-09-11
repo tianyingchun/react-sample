@@ -3,6 +3,7 @@ import WebAPI from '../../utils/WebAPI';
 class Workspace extends WebAPI{
   loadWorkspaceItems = (workspaceId) => {
     console.log('service: loadWorkspaceItems', workspaceId);
+
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         resolve([

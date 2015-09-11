@@ -21,9 +21,12 @@ export default function workspaces (state = initialState, action) {
 
   switch (action.type) {
   case WsActionTypes.GET_WS_LIST:
+   console.log('action:',action)
     return Object.assign({}, { isLoading: true }, { list: initialState });
 
   case resolve(WsActionTypes.GET_WS_LIST):
+   console.log('action resolve: ',action)
+
     return Object.assign({}, {
       isLoading: false,
       list: action.payload
