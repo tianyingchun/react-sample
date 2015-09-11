@@ -13,9 +13,10 @@ export default class Home extends Component {
     const meta = {
       title: 'SNS Platform',
       description: 'SNS Platform',
+      canonical: 'http://example.com/product-fashion-women-clothing',
       meta: {
         name: {
-          keywords: 'SNS Platform'
+          keywords: 'keywords 1, keywords 3'
         }
       }
     };

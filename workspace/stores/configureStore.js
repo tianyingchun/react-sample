@@ -2,7 +2,7 @@ import { createStore, applyMiddleware } from 'redux';
 // import thunkMiddleware from 'redux-thunk';
 import createLogger from 'redux-logger';
 import promiseMiddleware from '../../utils/promiseMiddleware';
-import rootReducer from '../reducers';
+import finalReducers from '../reducers';
 
 const loggerMiddleware = createLogger({
   level: 'log',
@@ -17,5 +17,5 @@ const createStoreWithMiddleware = applyMiddleware(
 
 // Creates a preconfigured store for this example.
 export default function configureStore (initialState) {
-  return createStoreWithMiddleware(rootReducer, initialState);
+  return createStoreWithMiddleware(finalReducers, initialState);
 }

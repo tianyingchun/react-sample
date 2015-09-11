@@ -1,12 +1,19 @@
+import * as types from '../constants/ProductActionTypes';
+
 export function getProductById () {
   return {
-    type: 'GET_PRODUCT',
-    promise: Promise.resolve({
-      data: {
-        title: 'testProduct',
-        description: 'this is test product description',
-        keywords: 'sns isomorphic product keywords'
-      }
+    type: types.GET_PRODUCT,
+    promise: new Promise((resolve, rejecet) => {
+      resolve({
+        title: 'SNS Platform product',
+        description: 'SNS Platform product',
+        canonical: 'http://example.com/product-fashion-women-clothing',
+        meta: {
+          name: {
+            keywords: 'keywords 1, keywords 3, product'
+          }
+        }
+      })
     })
   };
 }

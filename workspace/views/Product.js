@@ -13,6 +13,7 @@ export default class Product extends Component {
 
   render() {
     const {product} = this.props;
+    console.log(product)
     // const meta = {
     //   title: product.title,
     //   description: product.description,

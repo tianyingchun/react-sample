@@ -13,7 +13,7 @@ import Location from 'react-router/lib/Location';
 
 import configureStore from './workspace/stores/configureStore';
 import fetchComponentData from './utils/fetchComponentData';
-import Head from './workspace/views/Head';
+import HtmlHead from './workspace/components/HtmlHead';
 
 const app = express();
 const port = process.env.PORT || 40000;
@@ -33,14 +33,14 @@ function handleRender(req, res) {
   const location = new Location(req.path, req.query);
   const store = configureStore();
 
-  var  routes = require('./workspace/routes/member');
+  var  routes = require('./workspace/app/wslist/routes');
 
   Router.run(routes(), location, (error, routeState, transition) => {
 
     const links = [
-      'http://localhost:3000/public/workspace/member/bundle.css'
+      'http://172.16.233.137:3000/public/workspace/wslist/bundle.css'
     ];
-    const head = React.renderToString(React.createFactory(Head)({links}));
+    const head = React.renderToString(React.createFactory(HtmlHead)({links}));
 
     function renderView() {
       const InitialView = (
@@ -62,9 +62,9 @@ function handleRender(req, res) {
           <body>
             <script>window.__INITIAL_STATE__ = ${JSON.stringify(initialState)};</script>
             <div id="react-view">${componentHTML}</div>
-            <script src="http://localhost:3000/public/browser-polyfill.js"></script>
-            <script src="http://localhost:3000/public/reactkits.js"></script>
-            <script src="http://localhost:3000/public/workspace/member/bundle.js"></script>
+            <script src="http://172.16.233.137:3000/public/browser-polyfill.js"></script>
+            <script src="http://172.16.233.137:3000/public/reactkits.js"></script>
+            <script src="http://172.16.233.137:3000/public/workspace/wslist/bundle.js"></script>
           </body>
         </html>
       `;

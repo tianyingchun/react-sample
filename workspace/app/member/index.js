@@ -1,9 +1,9 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import Router from 'react-router';
-import { history } from '../../utils/browserHistory';
-import routes from '../routes/member';
-import configureStore from '../stores/configureStore';
+import { history } from '../../../utils/browserHistory';
+import configureStore from '../../stores/configureStore';
+import routes from './routes';
 
 const initialState = window.__INITIAL_STATE__;
 

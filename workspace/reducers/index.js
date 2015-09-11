@@ -1,8 +1,10 @@
 import { combineReducers } from 'redux';
-import product from './ProductReducer';
+import products from './products';
+import workspaces from './workspace';
 
-const rootReducer = combineReducers({
-  product
+const finalReducers = combineReducers({
+  products,
+  workspaces
 });
 
-export default rootReducer;
+export default finalReducers;
