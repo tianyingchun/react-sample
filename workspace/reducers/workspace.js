@@ -1,21 +1,41 @@
 import * as WsActionTypes from '../constants/WsActionTypes';
+import { resolve, reject } from 'redux-simple-promise';
 
 let initialState = [ {
-  id: 1,
-  name: 'workspace name, id: 1'
-}, {
-  id: 2,
-  name: 'workspace name, id: 2'
-} ];
+    "id": 1,
+    "name": "workspace name 1"
+  }, {
+    "id": 2,
+    "name": "workspace name 2"
+  },
+  {
+    "id": 3,
+    "name": "workspace name 3"
+  },{
+    "id": 4,
+    "name": "workspace name 4"
+  }
+];
 export default function workspaces (state = initialState, action) {
+  let list = Array.isArray(state) ? state : state.list;
+
   switch (action.type) {
-    case WsActionTypes.GET_WS_LIST:
-      var seed = state.length + 1;
-      return [ {
-        id: seed,
-        name: 'new workspace name, id: ' + seed
-      }, ...state ];
-    default:
-      return state;
+  case WsActionTypes.GET_WS_LIST:
+    return Object.assign({}, { isLoading: true }, { list: initialState });
+
+  case resolve(WsActionTypes.GET_WS_LIST):
+    return Object.assign({}, {
+      isLoading: false,
+      list: action.payload
+    });
+
+  case reject(WsActionTypes.GET_WS_LIST):
+    return Object.assign({}, {
+      isLoading: false,
+      list: action.payload
+    });
+
+  default:
+    return state;
   }
 }

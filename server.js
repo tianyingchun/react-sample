@@ -38,7 +38,7 @@ function handleRender(req, res) {
   Router.run(routes(), location, (error, routeState, transition) => {
 
     const links = [
-      'http://172.16.233.137:3000/public/workspace/wslist/bundle.css'
+      'http://localhost:3000/public/workspace/wslist/bundle.css'
     ];
     const head = React.renderToString(React.createFactory(HtmlHead)({links}));
 
@@ -62,9 +62,9 @@ function handleRender(req, res) {
           <body>
             <script>window.__INITIAL_STATE__ = ${JSON.stringify(initialState)};</script>
             <div id="react-view">${componentHTML}</div>
-            <script src="http://172.16.233.137:3000/public/browser-polyfill.js"></script>
-            <script src="http://172.16.233.137:3000/public/reactkits.js"></script>
-            <script src="http://172.16.233.137:3000/public/workspace/wslist/bundle.js"></script>
+            <script src="http://localhost:3000/public/browser-polyfill.js"></script>
+            <script src="http://localhost:3000/public/reactkits.js"></script>
+            <script src="http://localhost:3000/public/workspace/wslist/bundle.js"></script>
           </body>
         </html>
       `;
