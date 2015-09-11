@@ -1,8 +1,8 @@
 import { combineReducers } from 'redux';
-import workspaces from './workspace';
+import workspace from './workspace';
 
 const finalReducers = combineReducers({
-  workspaces
+  workspaces: workspace
 });
 
 export default finalReducers;

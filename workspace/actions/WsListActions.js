@@ -5,8 +5,4 @@ export function getExistedWsList () {
     type: WsActionTypes.GET_WS_LIST
   }
 }
-export function getWsList () {
-  return dispatch = > {
 
-  }
-}

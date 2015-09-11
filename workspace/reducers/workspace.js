@@ -2,17 +2,18 @@ import * as WsActionTypes from '../constants/WsActionTypes';
 
 let initialState = [ {
   id: 1,
-  name: 'workspace name 1'
+  name: 'workspace name, id: 1'
 }, {
-  id: 3,
-  name: 'workspace name 2'
+  id: 2,
+  name: 'workspace name, id: 2'
 } ];
 export default function workspaces (state = initialState, action) {
   switch (action.type) {
     case WsActionTypes.GET_WS_LIST:
+      var seed = state.length + 1;
       return [ {
-        id: -1,
-        name: 'new workspace name'
+        id: seed,
+        name: 'new workspace name, id: ' + seed
       }, ...state ];
     default:
       return state;

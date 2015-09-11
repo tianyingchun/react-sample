@@ -10,6 +10,6 @@ Forked from my another project [react-redux-webpack](https://github.com/tianying
 
 The command
 -----------
-- grunt devBuild (build development version bundle with sourcemap)
-- grunt prodBuild
-- grunt hotDevServer:{projectName}
+- grunt dev-build (build development version bundle with sourcemap)
+- grunt prod-build
+- grunt hot:{projectName}
