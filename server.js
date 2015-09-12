@@ -11,7 +11,7 @@ import { Provider } from 'react-redux';
 import Router from 'react-router';
 import Location from 'react-router/lib/Location';
 
-import configureStore from './workspace/stores/configureStore';
+import configureStore from './workspace/app/configureStore';
 import fetchComponentData from './utils/fetchComponentData';
 import HtmlHead from './workspace/components/HtmlHead';
 
