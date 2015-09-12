@@ -1,7 +1,7 @@
 import memberRecuder from './member';
-import wslistRecuder from './wslist'
+import wslistRecuder from './wslist';
 
-export default function findReducers(moduleName) {
+export default function findReducers (moduleName) {
 
   if (!moduleName) {
     throw new Error('we must specific `moduleName` to construct corresponding final reducers');

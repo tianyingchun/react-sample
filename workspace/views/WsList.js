@@ -8,7 +8,7 @@ import ReactButton from '../components/Button';
 
 @connect((state) => ({ workspaces: state.workspaces }))
 class WsList extends Component {
-  constructor(...args) {
+  constructor (...args) {
     super(...args);
     console.log('constructor');
   }
@@ -27,7 +27,7 @@ class WsList extends Component {
     // };
     //
     let isLoading = workspaces.isLoading;
-    let loadingTxt = isLoading ? 'LOADING.....': 'INIIAL';
+    let loadingTxt = isLoading ? 'LOADING.....' : 'INIIAL';
     let action = bindActionCreators(WsListActions, dispatch);
 
     console.log('loading: ', loadingTxt);

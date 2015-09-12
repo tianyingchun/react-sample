@@ -1,3 +1,4 @@
+import request from 'superagent';
 import WebAPI from '../../utils/WebAPI';
 
 class Workspace extends WebAPI{

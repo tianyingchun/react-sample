@@ -9,20 +9,20 @@ export function membersFilterBy (state = 'all', action) {
 
   switch (action.type) {
 
-  case filterTypes.ALL:
+    case filterTypes.ALL:
 
-    break;
+      break;
 
-  case filterTypes.REJECT:
+    case filterTypes.REJECT:
 
-    break;
+      break;
 
-  case filterTypes.UNTREATED:
+    case filterTypes.UNTREATED:
 
-    break;
+      break;
 
-  default:
-    return state;
+    default:
+      return state;
 
   }
 }
@@ -31,12 +31,12 @@ export function membersFilterBy (state = 'all', action) {
 export function membersSearchBy (state = '', action) {
 
   switch (action.type) {
-  case MemberActionTypes.SEARCH:
+    case MemberActionTypes.SEARCH:
 
-    break;
+      break;
 
-  default:
-    return state;
+    default:
+      return state;
 
   }
 }
