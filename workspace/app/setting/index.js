@@ -7,9 +7,11 @@ import routes from './routes';
 
 const initialState = window.__INITIAL_STATE__;
 
-const store = configureStore(initialState);
+// specific module reducers 'setting'.
+const store = configureStore('setting', initialState);
 
 const rootElement = document.getElementById('react-view');
+
 React.render(
   <Provider store={store}>
     {() => <Router children={routes()} history={history}/>}

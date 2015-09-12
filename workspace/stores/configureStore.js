@@ -1,8 +1,7 @@
 import { createStore, applyMiddleware } from 'redux';
-// import thunkMiddleware from 'redux-thunk';
 import createLogger from 'redux-logger';
 import promiseMiddleware from 'redux-simple-promise';
-import finalReducers from '../reducers';
+import finalModuleReducers from '../reducers';
 
 const loggerMiddleware = createLogger({
   collapsed: false,
@@ -14,7 +13,23 @@ const finalCreateStore = applyMiddleware(
   loggerMiddleware
 )(createStore);
 
-// Creates a preconfigured store for this example.
-export default function configureStore (initialState) {
-  return finalCreateStore(finalReducers, initialState);
+/**
+ * Creates a preconfigured store for this example.
+ * @param  {St} moduleName    the reducer module name
+ * @param  {Any} initialState initialState values for reducer.
+ * @return {Object}           store
+ */
+export default function configureStore (moduleName, initialState) {
+
+  let moduleReducers = finalModuleReducers(moduleName);
+  // store.
+  let store = finalCreateStore(moduleReducers, initialState);
+
+  // if (module.hot) {
+  //   module.hot.accept('../reducers', () =>
+  //     store.replaceReducer(moduleReducers)
+  //   );
+  // }
+
+  return store;
 }

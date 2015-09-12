@@ -31,7 +31,7 @@ function handleRender(req, res) {
   console.log(req.url, req.path, req.query);
 
   const location = new Location(req.path, req.query);
-  const store = configureStore();
+  const store = configureStore('wslist');
 
   var  routes = require('./workspace/app/wslist/routes');
 

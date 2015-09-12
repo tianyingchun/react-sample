@@ -1,8 +1,21 @@
-import { combineReducers } from 'redux';
-import workspace from './workspace';
+import memberRecuder from './member';
+import wslistRecuder from './wslist'
 
-const finalReducers = combineReducers({
-  workspaces: workspace
-});
+export default function findReducers(moduleName) {
 
-export default finalReducers;
+  if (!moduleName) {
+    throw new Error('we must specific `moduleName` to construct corresponding final reducers');
+  }
+  switch (moduleName) {
+
+    case 'member':
+      return memberRecuder;
+
+    case 'wslist':
+      return wslistRecuder;
+
+    default:
+      throw new Error(`can not find '${moduleName}' final reducers`);
+
+  }
+}
