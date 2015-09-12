@@ -23,9 +23,9 @@ const _ = {
 const stringFormat = (...args) => {
   // use this string as the format,Note {x},x start from 0,1,2
   // walk through each argument passed in
-  for (var fmt = args[0], ndx = 1; ndx < args.length; ++ndx) {
+  for (let fmt = args[0], ndx = 1; ndx < args.length; ++ndx) {
     // replace {1} with argument[1], {2} with argument[2], etc.
-    var argVal = _.isObject(args[ndx]) ? JSON.stringify(args[ndx]) : args[ndx];
+    let argVal = _.isObject(args[ndx]) ? JSON.stringify(args[ndx]) : args[ndx];
     fmt = fmt.replace(new RegExp('\\{' + (ndx - 1) + '\\}', "g"), argVal);
   }
   // return the formatted string

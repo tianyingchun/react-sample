@@ -1,7 +1,7 @@
 import lang from './lang';
 
 class WebAPI {
-  // Url related utitlites.
+  // PATH related utitlites.
   PATH = lang.PATH
 
   // STRING related utilities.

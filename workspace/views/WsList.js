@@ -10,7 +10,6 @@ import ReactButton from '../components/Button';
 class WsList extends Component {
   constructor (...args) {
     super(...args);
-    console.log('constructor');
   }
   render () {
     let { workspaces, dispatch } = this.props;
