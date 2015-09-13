@@ -1,6 +1,3 @@
-// maybe we need to install globally.
-require("babel/register")({stage: 0});
-
 import path from 'path';
 import express from 'express';
 import cors  from  'cors';
@@ -8,9 +5,8 @@ import favicon from 'serve-favicon';
 import React from 'react';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
-import Router from 'react-router';
-import Location from 'react-router/lib/Location';
-
+import { RoutingContext, match } from 'react-router';
+import createLocation from 'history/lib/createLocation'
 import configureStore from './workspace/app/configureStore';
 import fetchComponentData from './utils/fetchComponentData';
 import HtmlHead from './workspace/components/HtmlHead';
@@ -30,12 +26,22 @@ app.use(handleRender);
 function handleRender(req, res) {
   console.log(req.url, req.path, req.query);
 
-  const location = new Location(req.path, req.query);
-  const store = configureStore('wslist');
-
-  var  routes = require('./workspace/app/wslist/routes');
-
-  Router.run(routes(), location, (error, routeState, transition) => {
+  let store = configureStore('wslist');
+  let location = createLocation(req.url);
+  let routes = require('./workspace/app/wslist/routes');
+  match({ routes: routes(), location: location }, (error, redirectLocation, renderProps) => {
+    if (redirectLocation){
+      res.redirect(301, redirectLocation.pathname + redirectLocation.search);
+      return;
+    }
+    else if (error){
+      res.send(500, error.message);
+      return;
+    }
+    else if (renderProps == null){
+      res.send(404, 'Not found');
+      return;
+    }
 
     const links = [
       'http://localhost:3000/public/workspace/wslist/bundle.css'
@@ -46,7 +52,7 @@ function handleRender(req, res) {
       const InitialView = (
         <Provider store={store}>
           {() =>
-            <Router {...routeState} />
+            <RoutingContext {...renderProps} />
           }
         </Provider>
       );
@@ -72,7 +78,7 @@ function handleRender(req, res) {
       return HTML;
     }
 
-    fetchComponentData(store.dispatch, routeState.components, routeState.params)
+    fetchComponentData(store.dispatch, renderProps.components, renderProps.params)
       .then(renderView)
       .then(html => res.end(html))
       .catch(err => res.end(err.message));

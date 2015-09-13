@@ -1,6 +1,4 @@
-import { history as hashHistory } from 'react-router/lib/HashHistory';
-import { history as browserHistory } from 'react-router/lib/BrowserHistory';
-
+import { createHistory, createHashHistory } from 'history'
 
 let platform = () => {
   let ua = navigator.userAgent.toLowerCase();
@@ -35,9 +33,9 @@ let browser = platform();
 let autoHistory = () => {
   let { msie, version } = browser;
   if (msie && parseInt(version) <= 9) {
-    return hashHistory;
+    return createHashHistory();
   }
-  return browserHistory;
+  return createHistory();
 }
 let history = autoHistory();
 

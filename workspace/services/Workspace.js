@@ -8,9 +8,10 @@ class Workspace extends WebAPI{
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         resolve([
-          { id:1, name:'workspace item 1' },
-          { id:2, name:'workspace item 2' },
-          { id:3, name:'workspace item 3' }
+          { id:1, name:'new workspace item 1' },
+          { id:2, name:'new workspace item 2' },
+          { id:3, name:'new workspace item 3' },
+          { id:4, name:'new workspace item 4' }
         ]);
       }, 5000);
     });

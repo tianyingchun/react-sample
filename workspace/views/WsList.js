@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as WsListActions from '../actions/WsListActions';
 // import DocumentMeta from 'react-document-meta';
+import { Link } from 'react-router';
 import WorkspaceList from '../components/WorkspaceList';
 import ReactButton from '../components/Button';
 
@@ -10,6 +11,14 @@ import ReactButton from '../components/Button';
 class WsList extends Component {
   constructor (...args) {
     super(...args);
+  }
+  // binding action creators.
+  action = bindActionCreators(WsListActions, this.props.dispatch)
+
+  componentDidMount () {
+    let { dispatch } = this.props;
+    console.log('componentDidMount()...');
+    // dispatch(() => this.action.getWsListAsync('workspaceId'));
   }
   render () {
     let { workspaces, dispatch } = this.props;
@@ -27,7 +36,6 @@ class WsList extends Component {
     //
     let isLoading = workspaces.isLoading;
     let loadingTxt = isLoading ? 'LOADING.....' : 'INIIAL';
-    let action = bindActionCreators(WsListActions, dispatch);
 
     console.log('loading: ', loadingTxt);
 
@@ -36,9 +44,10 @@ class WsList extends Component {
     return (
       <div>
         <ReactButton loading={ loadingTxt }/>
+        <div><Link to="/about">About</Link></div>
         { /*<DocumentMeta {...meta}/> */ }
         <WorkspaceList workspaces= { workspaces.list || workspaces } />
-        <button onClick={() => action.getExistedWsList('workspaceId')}>trigger add</button>
+        <button onClick={() => this.action.getExistedWsList('workspaceId')}>trigger add</button>
       </div>
     );
   }

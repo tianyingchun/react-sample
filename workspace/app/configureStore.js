@@ -1,5 +1,6 @@
 import { createStore, applyMiddleware } from 'redux';
 import createLogger from 'redux-logger';
+import thunkMiddleware from 'redux-thunk';
 import promiseMiddleware from 'redux-simple-promise';
 import finalModuleReducers from '../reducers';
 
@@ -10,6 +11,7 @@ const loggerMiddleware = createLogger({
 
 const finalCreateStore = applyMiddleware(
   promiseMiddleware(),
+  thunkMiddleware,
   loggerMiddleware
 )(createStore);
 
