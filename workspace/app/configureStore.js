@@ -19,12 +19,13 @@ if ('production' === process.env.NODE_ENV) {
 } else if (typeof window !== 'undefined') {
   // Development and broswer mode
   finalCreateStore = compose (
-    applyMiddleware(...middlewares, loggerMiddleware),
+    applyMiddleware(...middlewares, loggerMiddleware)
     // We can attach devtool panel in view components, if you want.
-    require('redux-devtools').devTools(),
-    require('redux-devtools').persistState(
-      window.location.href.match(/[?&]debug_session=([^&]+)\b/)
-    )
+    // Note. devtools can't run ie8.
+    // require('redux-devtools').devTools(),
+    // require('redux-devtools').persistState(
+    //   window.location.href.match(/[?&]debug_session=([^&]+)\b/)
+    // )
   )(createStore);
 } else {
   // for Node Env

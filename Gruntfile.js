@@ -38,7 +38,7 @@ module.exports = function (grunt) {
   // Build development version with bundle.js with source map to target built directory.
   // Normally we don't need run this task, unless you want to debug built file in another remote merchine without dev-hot-server.
   grunt.registerTask('dev-build', 'The costomized webpack development build task ', function () {
-    grunt.task.run(['eslint', 'webpack_build:devBuild']);
+    grunt.task.run(['webpack_build:devBuild']);
   });
 
   // Wraper buildtool `webpack_build` task.
