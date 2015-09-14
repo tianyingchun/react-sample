@@ -31,7 +31,12 @@ module.exports = function () {
   // loaders for production
   config.module.loaders.push({
     test: /\.js$/,
-    loaders: ['babel-loader'],
+    loader: 'babel-loader',
+    query: {
+      // For ie8 jscript bugs, https://kangax.github.io/nfe/#jscript-bugs
+      // Named function expression creates TWO DISTINCT function objects!
+      optional: ["jscript"]
+    },
     exclude: /node_modules/
   });
   return config;
