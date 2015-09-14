@@ -10,7 +10,7 @@ let initialState = {
     { "id": 4, "name": "workspace name 4" }
   ]
 };
-export function workspaces (state = initialState, action) {
+export function workspaces (state = [], action) {
 
   let list = Array.isArray(state) ? state : state.list;
   console.log('workspaces reducer payload: ', action.payload)

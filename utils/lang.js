@@ -10,7 +10,16 @@ const _ = {
   isObject: (obj) => {
     var type = typeof obj;
     return type === 'function' || type === 'object' && !!obj;
-  }
+  },
+  /**
+   * The helper for check if we can use DOM,
+   * we can also used to check if current is Node Environment.
+   */
+  canUseDOM: !!(
+    typeof window !== 'undefined' &&
+    window.document &&
+    window.document.createElement
+  )
 };
 
 // Add some isType methods: isArguments, isFunction, isString, isNumber, isDate, isRegExp, isError.

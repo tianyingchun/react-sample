@@ -1,19 +1,38 @@
-import { createStore, applyMiddleware } from 'redux';
+import { createStore, applyMiddleware, compose } from 'redux';
 import createLogger from 'redux-logger';
 import thunkMiddleware from 'redux-thunk';
 import promiseMiddleware from 'redux-simple-promise';
 import finalModuleReducers from '../reducers';
 
-const loggerMiddleware = createLogger({
+let loggerMiddleware = createLogger({
   collapsed: false,
   predicate: (/*getState, action*/) => 'production' !== process.env.NODE_ENV
 });
 
-const finalCreateStore = applyMiddleware(
-  promiseMiddleware(),
-  thunkMiddleware,
-  loggerMiddleware
-)(createStore);
+// the production middlewares, performace optimazation.
+let middlewares = [ promiseMiddleware(), thunkMiddleware ];
+let finalCreateStore;
+
+if ('production' === process.env.NODE_ENV) {
+  // Production and broswer mode.
+  finalCreateStore = applyMiddleware(...middlewares)(createStore);
+} else if (typeof window !== 'undefined') {
+  // Development and broswer mode
+  finalCreateStore = compose (
+    applyMiddleware(...middlewares, loggerMiddleware),
+    // We can attach devtool panel in view components, if you want.
+    require('redux-devtools').devTools(),
+    require('redux-devtools').persistState(
+      window.location.href.match(/[?&]debug_session=([^&]+)\b/)
+    )
+  )(createStore);
+} else {
+  // for Node Env
+  finalCreateStore = compose (
+    applyMiddleware(...middlewares)
+  )(createStore);
+}
+
 
 /**
  * Creates a preconfigured store for this example.

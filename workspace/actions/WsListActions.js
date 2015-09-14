@@ -11,31 +11,25 @@ export function receiveWsList(wsList) {
   }
 }
 
-// promiseMiddleware usage.
-export function getExistedWsList(workspaceId) {
+// promiseMiddleware example, can be attached to component.needs for server async rendering.
+export function getExistedWsList(routerParams) {
   return {
     type: WsActionTypes.GET_WS_LIST,
     payload: {
-      promise: workspaceService.loadWorkspaceItems(workspaceId),
-      workspaceId
+      promise: workspaceService.loadWorkspaceItems(routerParams),
+      routerParams
     }
   };
 }
 
-// thunkMiddleware usage.
-export function getWsListAsync(workspaceId) {
+// thunkMiddleware example, can be attached to component.needs for server async rendering also.
+export function getWsListAsync(routerParams) {
+  console.log('router params: ', routerParams)
   return (dispatch, getState) => {
-    var currState = getState();
-    console.log('current state:', currState);
-    var workspaces = currState.workspaces;
-    if(workspaces) {
-      dispatch(receiveWsList(currState.workspaces.list));
-    } else {
-      return workspaceService.loadWorkspaceItems(workspaceId)
-        .then(function (result) {
-          console.log('result', result);
-          dispatch(receiveWsList(result));
-        })
-    }
+    return workspaceService.loadWorkspaceItems(routerParams)
+      .then(function (result) {
+        console.log('result', result);
+        dispatch(receiveWsList(result));
+      });
   };
 }

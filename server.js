@@ -2,6 +2,7 @@ import path from 'path';
 import express from 'express';
 import cors  from  'cors';
 import favicon from 'serve-favicon';
+import execTime from 'exec-time';
 import React from 'react';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
@@ -12,7 +13,9 @@ import fetchComponentData from './utils/fetchComponentData';
 import HtmlHead from './workspace/components/HtmlHead';
 
 const app = express();
+const NODE_ENV = app.get('env') || 'production';
 const port = process.env.PORT || 40000;
+const profiler = new execTime('[ISO]', NODE_ENV === 'development', 'ms');
 
 app.use(favicon(path.join(__dirname, './public/favicon.ico')));
 
@@ -24,12 +27,16 @@ app.use(handleRender);
 
 // We are going to fill these out in the sections to follow
 function handleRender(req, res) {
-  console.log(req.url, req.path, req.query);
 
   let store = configureStore('wslist');
   let location = createLocation(req.url);
   let routes = require('./workspace/app/wslist/routes');
+  // start profileing.
+  profiler.beginProfiling();
+
   match({ routes: routes(), location: location }, (error, redirectLocation, renderProps) => {
+    profiler.step('React-Router');
+
     if (redirectLocation){
       res.redirect(301, redirectLocation.pathname + redirectLocation.search);
       return;
@@ -49,6 +56,9 @@ function handleRender(req, res) {
     const head = React.renderToString(React.createFactory(HtmlHead)({links}));
 
     function renderView() {
+
+      profiler.step('fetchComponentData');
+
       const InitialView = (
         <Provider store={store}>
           {() =>
@@ -74,6 +84,7 @@ function handleRender(req, res) {
           </body>
         </html>
       `;
+      profiler.step('renderFullPageHtml');
 
       return HTML;
     }

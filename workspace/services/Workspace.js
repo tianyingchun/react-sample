@@ -3,8 +3,8 @@ import WebAPI from '../../utils/WebAPI';
 import lang from '../../utils/lang';
 
 class Workspace extends WebAPI{
-  loadWorkspaceItems = (workspaceId) => {
-    console.log('service: loadWorkspaceItems', workspaceId);
+  loadWorkspaceItems = (routerParams) => {
+    console.log('service: loadWorkspaceItems routerParams:', routerParams);
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         resolve([
@@ -13,7 +13,7 @@ class Workspace extends WebAPI{
           { id:3, name:'new workspace item 3' },
           { id:4, name:'new workspace item 4' }
         ]);
-      }, 5000);
+      }, routerParams.timeout || 0);
     });
   }
 }

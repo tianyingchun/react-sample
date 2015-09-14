@@ -9,9 +9,15 @@ import ReactButton from '../components/Button';
 
 @connect((state) => ({ workspaces: state.workspaces }))
 class WsList extends Component {
+
   constructor (...args) {
     super(...args);
   }
+
+  // used to server async rendering.
+  static needs = [
+    (params) => WsListActions.getExistedWsList(params)
+  ]
   // binding action creators.
   action = bindActionCreators(WsListActions, this.props.dispatch)
 
@@ -40,14 +46,13 @@ class WsList extends Component {
     console.log('loading: ', loadingTxt);
 
     // manully dispatch action.
-    // dispatch(action.getExistedWsList());
     return (
       <div>
         <ReactButton loading={ loadingTxt }/>
         <div><Link to="/about">About</Link></div>
         { /*<DocumentMeta {...meta}/> */ }
         <WorkspaceList workspaces= { workspaces.list || workspaces } />
-        <button onClick={() => this.action.getExistedWsList('workspaceId')}>trigger add</button>
+        <button onClick={() => this.action.getExistedWsList({ timeout:5000 })}>trigger add</button>
       </div>
     );
   }
