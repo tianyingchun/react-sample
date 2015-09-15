@@ -239,12 +239,7 @@ function getWebpackConfig(grunt, mode, projects) {
       grunt.log.writeln('\n---------------------------------------------------\n');
       grunt.log.ok('cssBundlePath:' + cssBundlePath);
 
-      if (mode === 'devServer') {
-        // dev hot loader, use auto css bundle filename for multiple entry points。
-        oExtractTextPlugin.filename = cssBundlePath;//'[name].dev-hot.entry.css';
-      } else {
-        oExtractTextPlugin.filename = cssBundlePath;
-      }
+      oExtractTextPlugin.filename = cssBundlePath;
       var jsBundlePath = path.normalize(_.template(webpack.output.filename)({
         projectName: projectName,
         version: subProject.version || ''
@@ -252,12 +247,7 @@ function getWebpackConfig(grunt, mode, projects) {
 
       grunt.log.ok('jsBundlePath:' + jsBundlePath);
 
-      if (mode === 'devServer') {
-        // dev hot loader, use auto js bundle filename for multiple entry points。
-        webpack.output.filename = jsBundlePath;//'[name].dev-hot.entry.js';
-      } else {
-        webpack.output.filename = jsBundlePath;
-      }
+      webpack.output.filename = jsBundlePath; //'[name].dev-hot.entry.js';
 
       var task_target_name = projectName + '.' + subProjectName;
 
