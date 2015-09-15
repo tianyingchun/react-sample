@@ -46,7 +46,7 @@ module.exports = {
         match: /^\/workspace\/list(\/)?$/,
         entry: './workspace/app/wslist/index.js',
         routes: './workspace/app/wslist/routes.js',
-        version: 'v100', // in mose case we don't need to specific version number.
+        version: '', // in mose case we don't need to specific version number.
         jsBundles: ['browser-polyfill.js', 'reactkits.js', 'workspace/wslist/${version}/bundle.js'],
         cssBundles: ['workspace/wslist/${version}/bundle.css']
       }

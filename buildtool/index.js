@@ -186,7 +186,7 @@ function getWebpackConfig(grunt, mode, projects) {
           webpack.devtool = 'eval-source-map';
 
           // override webpack.entry
-          _.extend(webpack.entry, dev_server_entry.concat([subProject.entry]));
+          webpack.entry[subProjectName] = dev_server_entry.concat([subProject.entry]);
 
           break;
         case 'devBuild':
@@ -195,7 +195,7 @@ function getWebpackConfig(grunt, mode, projects) {
           webpack.output.publicPath = default_config.assets.dev;
 
           // override webpack.entry
-          _.extend(webpack.entry, [subProject.entry]);
+          webpack.entry[subProjectName] = [subProject.entry]
 
           break;
         case 'prodBuild':
@@ -204,7 +204,7 @@ function getWebpackConfig(grunt, mode, projects) {
           webpack.output.publicPath = default_config.assets.prod;
 
           // override webpack.entry
-          _.extend(webpack.entry, [subProject.entry]);
+          webpack.entry[subProjectName] = [subProject.entry];
 
           break;
       }
@@ -233,28 +233,35 @@ function getWebpackConfig(grunt, mode, projects) {
 
       var cssBundlePath = path.normalize(_.template(oExtractTextPlugin.filename)({
         projectName: projectName,
-        subProjectName: subProjectName,
         version: subProject.version || ''
       }));
 
       grunt.log.writeln('\n---------------------------------------------------\n');
       grunt.log.ok('cssBundlePath:' + cssBundlePath);
 
-      oExtractTextPlugin.filename = cssBundlePath;
-
+      if (mode === 'devServer') {
+        // dev hot loader, use auto css bundle filename for multiple entry points。
+        oExtractTextPlugin.filename = cssBundlePath;//'[name].dev-hot.entry.css';
+      } else {
+        oExtractTextPlugin.filename = cssBundlePath;
+      }
       var jsBundlePath = path.normalize(_.template(webpack.output.filename)({
         projectName: projectName,
-        subProjectName: subProjectName,
         version: subProject.version || ''
       }));
 
       grunt.log.ok('jsBundlePath:' + jsBundlePath);
 
-      webpack.output.filename = jsBundlePath;
+      if (mode === 'devServer') {
+        // dev hot loader, use auto js bundle filename for multiple entry points。
+        webpack.output.filename = jsBundlePath;//'[name].dev-hot.entry.js';
+      } else {
+        webpack.output.filename = jsBundlePath;
+      }
 
       var task_target_name = projectName + '.' + subProjectName;
 
-      grunt.log.ok('webpack taskName: ', task_target_name);
+      grunt.log.ok('webpack task target name: ', task_target_name);
 
       grunt.log.writeln('\n---------------------------------------------------');
 
@@ -270,7 +277,7 @@ function getWebpackConfig(grunt, mode, projects) {
  * Dynamic prepare webpack grunt config section
  * @param  {Object} grunt
  * @param  {String} mode        'devServer','devBuild','prodBuild'
- * @param  {Object} config      can be {} || { projectName:'', subProjectName:'' }
+ * @param  {Object} config       can be {} || { projectName:'', subProjectName:'' }
  * @return {Object}              webpack configuration
  */
 function prepareBuildWebpackConfig(grunt, mode, config) {
@@ -359,11 +366,26 @@ function registerWebpackHotDevServerTask(grunt) {
       grunt.fail.fatal('The project `' + projectName + '` can not be fund in build.config.js')
       return;
     }
+    var devHotConfig = prepareBuildWebpackConfig(grunt, 'devServer', {
+      projectName: projectName
+    });
+
+    var entries = {};
+    var targetConfig = null;
+    Object.keys(devHotConfig).forEach(function (taskTargetName) {
+      if (targetConfig === null) {
+        targetConfig = devHotConfig[taskTargetName];
+      }
+      _.extend(entries, devHotConfig[taskTargetName].entry);
+    });
+
+    if (targetConfig) {
+      targetConfig.entry = entries;
+    }
+
     var config = {
       options: {
-        webpack: prepareBuildWebpackConfig(grunt, 'devServer', {
-          projectName: projectName
-        })[projectName],
+        webpack: targetConfig,
         publicPath: default_config.devServer.publicPath
       }
     };
@@ -378,6 +400,8 @@ function registerWebpackHotDevServerTask(grunt) {
         colors: true
       }
     };
+    // console.log(JSON.stringify(config))
+
     grunt.config.set('webpack-dev-server', config);
 
     // run prompt devServer build flow for local development phase.
