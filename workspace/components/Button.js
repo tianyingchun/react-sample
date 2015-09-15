@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 
+if (process.env.BROWSER) {
+  require('../stylesheets/sample-less.less');
+}
 class ReactButton extends Component {
 
   //

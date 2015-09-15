@@ -26,7 +26,7 @@ function runBuildTask(grunt, promptResult, mode) {
   if (buildProjectName === 'build_all_projects') {
     if (true === promptResult['build.all.project.confirm']) {
 
-      // to build all projects and it's modules.
+      // to build all projects and it's sub projects.
       grunt.log.ok('building all projects defined in ./build.config.js');
 
       // prepare grunt-webpack configuration.
@@ -38,16 +38,16 @@ function runBuildTask(grunt, promptResult, mode) {
       grunt.log.ok('Task `build all projects ` cancelled');
     }
   } else {
-    var buildModule = promptResult['build.specific.module'];
-    grunt.log.ok('building: ', 'project[' + buildProjectName + ']' + '.' + 'module[' + buildModule + ']');
+    var buildSubProject = promptResult['build.specific.subproject'];
+    grunt.log.ok('building: ', 'project[' + buildProjectName + ']' + '.' + 'subProject[' + buildSubProject + ']');
 
-    if (buildModule === 'build_all_modules') {
-      buildModule = '';
+    if (buildSubProject === 'build_all_sub_projects') {
+      buildSubProject = '';
     }
     // prepare grunt-webpack configuration.
     grunt.config.set('webpack', prepareBuildWebpackConfig(grunt, mode, {
       projectName: buildProjectName,
-      moduleName: buildModule
+      subProjectName: buildSubProject
     }));
 
     // run `webpack` task
@@ -56,10 +56,10 @@ function runBuildTask(grunt, promptResult, mode) {
 }
 var getPromptConfig = function (grunt, projects) {
 
-  // project module choices.
-  var moduleChoices = [{
-    name: 'build_all_modules',
-    value: 'build_all_modules',
+  // sub project choices.
+  var subProjectChoices = [{
+    name: 'build_all_sub_projects',
+    value: 'build_all_sub_projects',
     checked: true
   }];
 
@@ -84,24 +84,24 @@ var getPromptConfig = function (grunt, projects) {
     default: 'build_all_projects',
     choices: projectChoices
   }, {
-    config: 'build.specific.module',
+    config: 'build.specific.subproject',
     type: 'list',
-    message: 'What specific module would you like to build ?',
+    message: 'What specific sub project would you like to build ?',
     choices: function () {
-      return moduleChoices;
+      return subProjectChoices;
     },
     when: function (answers) {
       var answer = answers['list.all.projects'];
       var buildAllProject = (answer === 'build_all_projects');
 
-      // if we need to build specific module, need to return true.
+      // if we need to build specific sub project, need to return true.
       if (!buildAllProject) {
         var projectInfo = projects[answer];
-        // build specific module
-        Object.keys(projectInfo).forEach(function (moduleName) {
-          moduleChoices.push({
-            name: moduleName,
-            value: moduleName
+        // build specific sub project
+        Object.keys(projectInfo).forEach(function (subProjectName) {
+          subProjectChoices.push({
+            name: subProjectName,
+            value: subProjectName
           });
         });
 
@@ -147,11 +147,12 @@ var getPromptConfig = function (grunt, projects) {
 
 /**
  * get specificed webpack via various conditions.
+ * @param  {Object} grunt
  * @param  {String} mode        'devServer','devBuild','prodBuild'
  * @param  {Object} projects     projects defined in build.config.js
  * @return {Object}              webpack configuration
  */
-function getWebpackConfig(mode, projects) {
+function getWebpackConfig(grunt, mode, projects) {
   var result = {};
 
   // The webpack dev server socket config for development phase.
@@ -166,73 +167,101 @@ function getWebpackConfig(mode, projects) {
   Object.keys(projects).forEach(function (projectName) {
     var webpack = null;
     var project = projects[projectName];
+    // create build task config 'project.subProject'
+    Object.keys(project).forEach(function (subProjectName) {
 
-    switch (mode) {
-      // hot dev server
-      case 'devServer':
-        webpack = webpackDevConfig();
-        webpack.output.path = default_config.built.baseDir;
-        webpack.output.publicPath = default_config.assets.dev;
+      // current subProject.
+      var subProject = project[subProjectName];
 
-        // Add source mapping for debuging.
-        // use sourcemap, convenient for debugging.
-        webpack.devtool = 'eval-source-map';
+      // console.log('subProject', project, subProject)
+      switch (mode) {
+        // hot dev server
+        case 'devServer':
+          webpack = webpackDevConfig();
+          webpack.output.path = default_config.built.baseDir;
+          webpack.output.publicPath = default_config.assets.dev;
 
-        // override webpack.entry
-        _.extend(webpack.entry, project, function (dist, source) {
-          if (source) {
-            return dev_server_entry.concat([source.entry]);
-          }
-        });
+          // Add source mapping for debuging.
+          // use sourcemap, convenient for debugging.
+          webpack.devtool = 'eval-source-map';
 
-        break;
-      case 'devBuild':
-        webpack = webpackDevConfig();
-        webpack.output.path = path.join(default_config.built.baseDir, 'debug');
-        webpack.output.publicPath = default_config.assets.dev;
+          // override webpack.entry
+          _.extend(webpack.entry, dev_server_entry.concat([subProject.entry]));
 
-        // override webpack.entry
-        _.extend(webpack.entry, project, function (dist, source) {
-          if (source) {
-            return [source.entry];
-          }
-        });
+          break;
+        case 'devBuild':
+          webpack = webpackDevConfig();
+          webpack.output.path = path.join(default_config.built.baseDir, 'debug');
+          webpack.output.publicPath = default_config.assets.dev;
 
-        break;
-      case 'prodBuild':
-        webpack = webpackProdConfig();
-        webpack.output.path = default_config.built.baseDir;
-        webpack.output.publicPath = default_config.assets.prod;
+          // override webpack.entry
+          _.extend(webpack.entry, [subProject.entry]);
 
-        // override webpack.entry
-        _.extend(webpack.entry, project, function (dist, source) {
-          if (source) {
-            return [source.entry];
-          }
-        });
+          break;
+        case 'prodBuild':
+          webpack = webpackProdConfig();
+          webpack.output.path = default_config.built.baseDir;
+          webpack.output.publicPath = default_config.assets.prod;
 
-        break;
-    }
+          // override webpack.entry
+          _.extend(webpack.entry, [subProject.entry]);
 
-    var oExtractTextPlugin = _.find(webpack.plugins, function (item) {
-      return 'ExtractTextPlugin' === item.constructor.name;
-    });
+          break;
+      }
 
-    var oModuleUrlLoader = _.find(webpack.module.loaders, function (item) {
-      return item.loader === 'url-loader';
-    });
-
-    // Set dist location for transfer url resources.
-    _.extend(oModuleUrlLoader.query, _.mapValues(default_config.assets.urlLoaderQuery, function (val) {
-      return _.template(val)({
-        projectName: projectName
+      var oExtractTextPlugin = _.find(webpack.plugins, function (item) {
+        return 'ExtractTextPlugin' === item.constructor.name;
       });
-    }));
 
-    // mapping real path to corresponding project.
-    oExtractTextPlugin.filename = path.join(projectName, oExtractTextPlugin.filename);
-    webpack.output.filename = path.join(projectName, webpack.output.filename);
-    result[projectName] = webpack;
+      var oModuleUrlLoader = _.find(webpack.module.loaders, function (item) {
+        return item.loader === 'url-loader';
+      });
+
+      // Set dist location for transfer url resources.
+      _.extend(oModuleUrlLoader.query, _.mapValues(default_config.assets.urlLoaderQuery, function (val) {
+        return _.template(val)({
+          projectName: projectName
+        });
+      }));
+
+
+      // Dynamic generate jsBundles, cssBundles for corresponding project.
+      // ------------------------------------------------------------------
+      // workspace/member/v1000/bundle.js --with version.
+      // workspace/member/bundle.js
+      // filename: '${projectName}/${subProjectName}/${version}/bundle.js'
+
+      var cssBundlePath = path.normalize(_.template(oExtractTextPlugin.filename)({
+        projectName: projectName,
+        subProjectName: subProjectName,
+        version: subProject.version || ''
+      }));
+
+      grunt.log.writeln('\n---------------------------------------------------\n');
+      grunt.log.ok('cssBundlePath:' + cssBundlePath);
+
+      oExtractTextPlugin.filename = cssBundlePath;
+
+      var jsBundlePath = path.normalize(_.template(webpack.output.filename)({
+        projectName: projectName,
+        subProjectName: subProjectName,
+        version: subProject.version || ''
+      }));
+
+      grunt.log.ok('jsBundlePath:' + jsBundlePath);
+
+      webpack.output.filename = jsBundlePath;
+
+      var task_target_name = projectName + '.' + subProjectName;
+
+      grunt.log.ok('webpack taskName: ', task_target_name);
+
+      grunt.log.writeln('\n---------------------------------------------------');
+
+      result[task_target_name] = webpack;
+
+    });
+
   });
 
   return result;
@@ -241,14 +270,14 @@ function getWebpackConfig(mode, projects) {
  * Dynamic prepare webpack grunt config section
  * @param  {Object} grunt
  * @param  {String} mode        'devServer','devBuild','prodBuild'
- * @param  {Object} config      can be {} || { projectName:'', moduleName:'' }
+ * @param  {Object} config      can be {} || { projectName:'', subProjectName:'' }
  * @return {Object}              webpack configuration
  */
 function prepareBuildWebpackConfig(grunt, mode, config) {
 
   var buildProjects = buildConfig.projects || {};
   var projectName = config.projectName;
-  var moduleName = config.moduleName;
+  var subProjectName = config.subProjectName;
 
   // specificed project name.
   if (projectName) {
@@ -259,16 +288,16 @@ function prepareBuildWebpackConfig(grunt, mode, config) {
     buildProjects = _.pick(buildProjects, [projectName]);
   }
 
-  // specificed module name.
-  if (moduleName) {
-    if (!buildProjects[projectName][moduleName]) {
-      grunt.fail.fatal('The project `' + projectName + '`.`' + moduleName + '` can not be fund in build.config.js')
+  // specificed subProject name.
+  if (subProjectName) {
+    if (!buildProjects[projectName][subProjectName]) {
+      grunt.fail.fatal('The project `' + projectName + '`.`' + subProjectName + '` can not be fund in build.config.js')
       return;
     }
-    buildProjects[projectName] = _.pick(buildProjects[projectName], [moduleName]);
+    buildProjects[projectName] = _.pick(buildProjects[projectName], [subProjectName]);
   }
 
-  var webpack = getWebpackConfig(mode, buildProjects);
+  var webpack = getWebpackConfig(grunt, mode, buildProjects);
 
   // console.log('webpackConfig:', JSON.stringify(webpack))
 
@@ -307,7 +336,7 @@ function initBuildCfg(grunt, options) {
   // merge build config options.
   _.extend(default_config, buildConfigOptions, options);
 
-  // simple validation if project existed local work desk.
+  // look at if project is valid.
   Object.keys(buildProjects).forEach(function (projectName) {
     var projectLocalDir = path.join(__dirname, '..', projectName);
     if (!grunt.file.isDir(projectLocalDir)) {

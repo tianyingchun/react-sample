@@ -1,6 +1,6 @@
 import path from 'path';
 import express from 'express';
-import cors  from  'cors';
+import cors from  'cors';
 import favicon from 'serve-favicon';
 import execTime from 'exec-time';
 import React from 'react';
@@ -11,16 +11,20 @@ import createLocation from 'history/lib/createLocation'
 import configureStore from './workspace/app/configureStore';
 import fetchComponentData from './utils/fetchComponentData';
 import HtmlHead from './workspace/components/HtmlHead';
-
+import getRenderParams from './utils/getISORenderParams';
+import compression from 'compression';
 const app = express();
 const NODE_ENV = app.get('env') || 'production';
 const port = process.env.PORT || 40000;
 const profiler = new execTime('[ISO]', NODE_ENV === 'development', 'ms');
 
+// compress all requests
+app.use(compression());
+
 app.use(favicon(path.join(__dirname, './public/favicon.ico')));
 
-// Use this middleware to serve up static files built into the dist directory
-app.use("/public", cors(), express.static(path.join(__dirname, './public')));
+// Use this middleware to serve up static files built into the dist directory, milliseconds
+app.use("/public", cors(), express.static(path.join(__dirname, './public'), { maxAge: '15 days'}));
 
 // This is fired every time the server side receives a request
 app.use(handleRender);
@@ -28,9 +32,19 @@ app.use(handleRender);
 // We are going to fill these out in the sections to follow
 function handleRender(req, res) {
 
+  // Resolve current server rendering params.
+  let { project, routes, jsBundles, cssBundles } = getRenderParams(req, NODE_ENV);
+
+  if (!routes || !project)  {
+
+    console.log('router match failed in build.config.js, 404 not found!');
+    // should give 404.
+    res.status(404).send('Not found');
+    return;
+  }
+
   let store = configureStore('wslist');
   let location = createLocation(req.url);
-  let routes = require('./workspace/app/wslist/routes');
   // start profileing.
   profiler.beginProfiling();
 
@@ -42,18 +56,16 @@ function handleRender(req, res) {
       return;
     }
     else if (error){
-      res.send(500, error.message);
+      res.status(500).send(error.message);
       return;
     }
     else if (renderProps == null){
-      res.send(404, 'Not found');
+      console.log('render props is null while through react-router, 404 not found!');
+      res.status(404).send('Not found');
       return;
     }
 
-    const links = [
-      'http://localhost:3000/public/workspace/wslist/bundle.css'
-    ];
-    const head = React.renderToString(React.createFactory(HtmlHead)({links}));
+    const head = React.renderToString(React.createFactory(HtmlHead)({ links: cssBundles || [] }));
 
     function renderView() {
 
@@ -71,6 +83,10 @@ function handleRender(req, res) {
 
       const initialState = store.getState();
 
+      let scriptsHtml = jsBundles.map(function (jsLink) {
+        return ('<script src="' + jsLink + '"></script>');
+      }).join('');
+
       const HTML = `
         <!DOCTYPE html>
         <html>
@@ -78,9 +94,7 @@ function handleRender(req, res) {
           <body>
             <script>window.__INITIAL_STATE__ = ${JSON.stringify(initialState)};</script>
             <div id="react-view">${componentHTML}</div>
-            <script src="http://localhost:3000/public/browser-polyfill.js"></script>
-            <script src="http://localhost:3000/public/reactkits.js"></script>
-            <script src="http://localhost:3000/public/workspace/wslist/bundle.js"></script>
+            ${scriptsHtml}
           </body>
         </html>
       `;

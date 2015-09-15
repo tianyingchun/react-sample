@@ -23,20 +23,32 @@ module.exports = {
     }
   },
   projects: {
+    // ${projectName}, project layers
     workspace: {
+      // ${subProjectName}, it contains multi module in business domain.
       member: {
+        // server rendering url matching.
+        match: /^\/workspace\/m\/.*/,
+        // entry point, must be string.
         entry: './workspace/app/member/index.js',
+        routes: './workspace/app/member/routes.js',
         version: '', //maybe: cdn.xx.com/public/workspace/member/bundle.js?v=version
-        js: ['workspace/member/${version}/bundle.common.js', 'workspace/member/${version}/bundle.js'],
-        css: ['workspace/member/${version}/bundle.common.css', 'workspace/member/${version}/bundle.css']
+        jsBundles: ['browser-polyfill.js', 'reactkits.js', 'workspace/member/${version}/bundle.js'],
+        cssBundles: ['workspace/member/${version}/bundle.css']
       },
       setting: {
+        match: /^\/workspace\/s\/*/,
         entry: './workspace/app/setting/index.js',
+        routes: './workspace/app/setting/routes.js',
         version: ''
       },
       wslist: {
+        match: /^\/workspace\/list(\/)?$/,
         entry: './workspace/app/wslist/index.js',
-        version: ''
+        routes: './workspace/app/wslist/routes.js',
+        version: 'v100', // in mose case we don't need to specific version number.
+        jsBundles: ['browser-polyfill.js', 'reactkits.js', 'workspace/wslist/${version}/bundle.js'],
+        cssBundles: ['workspace/wslist/${version}/bundle.css']
       }
     }
   }

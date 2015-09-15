@@ -15,12 +15,13 @@ module.exports = function (grunt) {
       isomorphic: {
         script: './isomorphic',
         options: {
-          nodeArgs: [/*'--debug'*/],
+          nodeArgs: [ /*'--debug'*/ ],
           ignore: ['node_modules/**'],
           env: {
             PORT: '2000',
             // for development, isomorphic server render react
-            NODE_ENV: 'development',
+            NODE_ENV: '',
+            DEBUG: 'iso:*,',
             DEBUG_COLORS: true
           },
           ext: 'js,jsx,html,ejs'
