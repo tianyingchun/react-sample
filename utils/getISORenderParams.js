@@ -87,7 +87,7 @@ const getRenderParams = (req, env) => {
     cssBundles
   };
 
-  logger('result: ', result);
+  // logger('result: ', result);
   return result;
 }
 

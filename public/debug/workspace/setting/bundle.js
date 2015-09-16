@@ -3117,8 +3117,8 @@ webpackJsonp([1],[
 	
 	var initialState = window.__INITIAL_STATE__;
 	
-	// specific module reducers 'member'
-	var store = (0, _configureStore2['default'])('member', initialState);
+	// specific module reducers 'setting'.
+	var store = (0, _configureStore2['default'])('setting', initialState);
 	
 	var rootElement = document.getElementById('react-view');
 	
