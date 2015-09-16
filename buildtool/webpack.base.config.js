@@ -27,7 +27,7 @@ module.exports = function baseConfig() {
     },
     plugins: [
       new webpack.optimize.OccurenceOrderPlugin(),
-      new ExtractTextPlugin("${projectName}/[name]/bundle.css?v=${version}", { allChunks: true }),
+      new ExtractTextPlugin("${projectName}/[name]/bundle.css${version}", { allChunks: true }),
       new webpack.optimize.CommonsChunkPlugin({
         name: 'library',
         filename: 'reactkits.js',
@@ -38,7 +38,7 @@ module.exports = function baseConfig() {
       path: path.join(__dirname, 'public'),
       // workspace/member/v1000/bundle.js --with version.
       // workspace/member/bundle.js
-      filename: '${projectName}/[name]/bundle.js?v=${version}'
+      filename: '${projectName}/[name]/bundle.js${version}'
       // publicPath: 'http://cdn.xx.com/public/' will set dynamicly via buildtool.
     },
     resolve: {

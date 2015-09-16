@@ -43,6 +43,10 @@ const getRenderParams = (req, env) => {
       // logger('subporject: ', subProject)
       if (subProject.match && subProject.match.test(urlPath)) {
         _project = subProject;
+        // project name.
+        _project.projectName = projectName;
+        // sub project name.
+        _project.subProjectName = subProjectName;
         return false;
       }
     });

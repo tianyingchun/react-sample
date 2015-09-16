@@ -24,8 +24,7 @@ function buildConfig() {
 
   // look at if project is valid.
   Object.keys(buildProjects).forEach(function (projectName) {
-    var projectLocalDir = path.join(cwd, projectName);
-
+    var projectLocalDir = path.join(cwd, buildConfigOptions.projectRoot, projectName);
     if (!Util.isDir(projectLocalDir)) {
       console.log('The project `' + projectName + '` found in ./build.config.js but not real existed in' + projectLocalDir);
       delete buildProjects[projectName];

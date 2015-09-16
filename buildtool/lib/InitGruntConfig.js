@@ -14,7 +14,6 @@ var default_config = projectInfo.config;
  * @return {Object}              webpack configuration
  */
 var getWebpackConfig = function (grunt, mode, projects) {
-
   var result = {};
 
   // The webpack dev server socket config for development phase.

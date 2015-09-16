@@ -2,6 +2,10 @@ var path = require('path');
 module.exports = {
   // the optional configurations.
   options: {
+    // the location related gruntfile of your projects root folder.
+    // put web, admin into ./*
+    projectRoot: './',
+
     devServer: {
       host: 'localhost',
       port: 3000,

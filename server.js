@@ -4,13 +4,13 @@ import cors from  'cors';
 import favicon from 'serve-favicon';
 import execTime from 'exec-time';
 import React from 'react';
-import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 import { RoutingContext, match } from 'react-router';
 import createLocation from 'history/lib/createLocation'
-import configureStore from './workspace/app/configureStore';
+import configureStoreForWorkspace from './workspace/app/configureStore';
+
 import fetchComponentData from './utils/fetchComponentData';
-import HtmlHead from './workspace/components/HtmlHead';
+import HtmlHead from './shared/components/HtmlHead';
 import getRenderParams from './utils/getISORenderParams';
 import compression from 'compression';
 import { minify } from 'html-minifier';
@@ -46,7 +46,24 @@ function handleRender(req, res) {
     return;
   }
 
-  let store = configureStore('wslist');
+  // default is web.
+  let store = configureStoreForWorkspace(project.subProjectName);
+  console.log('projectName %s, sub projectName: %s', project.projectName, project.subProjectName);
+
+  switch (project.projectName) {
+
+    case 'workspace':
+
+      // store = configureStoreForWeb(project.subProjectName);
+      break;
+
+    case 'document':
+
+      break;
+
+    default:
+
+  }
   let location = createLocation(req.url);
   // start profileing.
   profiler.beginProfiling();
