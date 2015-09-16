@@ -13,6 +13,8 @@ import fetchComponentData from './utils/fetchComponentData';
 import HtmlHead from './workspace/components/HtmlHead';
 import getRenderParams from './utils/getISORenderParams';
 import compression from 'compression';
+import { minify } from 'html-minifier';
+
 const app = express();
 const NODE_ENV = app.get('env') || 'production';
 const port = process.env.PORT || 40000;
@@ -21,10 +23,11 @@ const profiler = new execTime('[ISO]', NODE_ENV === 'development', 'ms');
 // compress all requests
 app.use(compression());
 
+
 app.use(favicon(path.join(__dirname, './public/favicon.ico')));
 
 // Use this middleware to serve up static files built into the dist directory, milliseconds
-app.use("/public", cors(), express.static(path.join(__dirname, './public'), { maxAge: '15 days'}));
+app.use("/public", cors(), express.static(path.join(__dirname, './public'), { maxAge: '30 days'}));
 
 // This is fired every time the server side receives a request
 app.use(handleRender);
@@ -100,7 +103,7 @@ function handleRender(req, res) {
       `;
       profiler.step('renderFullPageHtml');
 
-      return HTML;
+      return minify(HTML);
     }
 
     fetchComponentData(store.dispatch, renderProps.components, renderProps.params)

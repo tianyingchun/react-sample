@@ -33,8 +33,8 @@ module.exports = {
         entry: './workspace/app/member/index.js',
         routes: './workspace/app/member/routes.js',
         version: '', //maybe: cdn.xx.com/public/workspace/member/bundle.js?v=version
-        jsBundles: ['browser-polyfill.js', 'reactkits.js', 'workspace/member/bundle.js?v=${version}'],
-        cssBundles: ['workspace/member/bundle.css?v=${version}']
+        jsBundles: ['browser-polyfill.js', 'reactkits.js', 'workspace/member/bundle.js${version}'],
+        cssBundles: ['workspace/member/bundle.css${version}']
       },
       setting: {
         match: /^\/workspace\/s\/*/,
@@ -46,9 +46,9 @@ module.exports = {
         match: /^\/workspace\/list(\/)?$/,
         entry: './workspace/app/wslist/index.js',
         routes: './workspace/app/wslist/routes.js',
-        version: '', // in mose case we don't need to specific version number.
-        jsBundles: ['browser-polyfill.js', 'reactkits.js', 'workspace/wslist/bundle.js?v=${version}'],
-        cssBundles: ['workspace/wslist/bundle.css?v=${version}']
+        version: '?2015', // in mose case we don't need to specific version number.
+        jsBundles: ['browser-polyfill.js', 'reactkits.js', 'workspace/wslist/bundle.js${version}'],
+        cssBundles: ['workspace/wslist/bundle.css${version}']
       }
     }
   }
