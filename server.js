@@ -85,8 +85,6 @@ function handleRender(req, res) {
       return;
     }
 
-    const head = React.renderToString(React.createFactory(HtmlHead)({ links: cssBundles || [] }));
-
     function renderView() {
 
       profiler.step('fetchComponentData');
@@ -100,6 +98,7 @@ function handleRender(req, res) {
       );
 
       const componentHTML = React.renderToString(InitialView);
+      const head = React.renderToString(React.createFactory(HtmlHead)({ links: cssBundles || [] }));
 
       const initialState = store.getState();
 
@@ -120,7 +119,11 @@ function handleRender(req, res) {
       `;
       profiler.step('renderFullPageHtml');
 
-      return minify(HTML);
+      return minify(HTML, {
+        removeEmptyAttributes: true,
+        removeScriptTypeAttributes: true,
+        collapseWhitespace: true
+      });
     }
 
     fetchComponentData(store.dispatch, renderProps.components, renderProps.params)
