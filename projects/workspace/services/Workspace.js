@@ -1,5 +1,5 @@
 import request from 'superagent';
-import WebAPI from '../../utils/WebAPI';
+import WebAPI from '../../../utils/WebAPI';
 
 class Workspace extends WebAPI{
   loadWorkspaceItems = (routerParams) => {

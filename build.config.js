@@ -4,7 +4,7 @@ module.exports = {
   options: {
     // the location related gruntfile of your projects root folder.
     // put web, admin into ./*
-    projectRoot: './',
+    projectRoot: './projects',
 
     devServer: {
       host: 'localhost',
@@ -19,7 +19,7 @@ module.exports = {
     assets: {
       // the urlLoaderQuery used in buildtool/webpack.base.config.js <url-loader> config node.
       urlLoaderQuery: {
-        context: '${projectName}/stylesheets',
+        context: 'projects/${projectName}/stylesheets',
         name: '${projectName}/[path][name].[ext]'
       },
       dev: 'http://localhost:3000/public/',
@@ -34,22 +34,22 @@ module.exports = {
         // server rendering url matching.
         match: /^\/workspace\/m\/.*/,
         // entry point, must be string.
-        entry: './workspace/app/member/index.js',
-        routes: './workspace/app/member/routes.js',
+        entry: './projects/workspace/app/member/index.js',
+        routes: './projects/workspace/app/member/routes.js',
         version: '', //maybe: cdn.xx.com/public/workspace/member/bundle.js?v=version
         jsBundles: ['browser-polyfill.js', 'reactkits.js', 'workspace/member/bundle.js${version}'],
         cssBundles: ['workspace/member/bundle.css${version}']
       },
       setting: {
         match: /^\/workspace\/s\/*/,
-        entry: './workspace/app/setting/index.js',
-        routes: './workspace/app/setting/routes.js',
+        entry: './projects/workspace/app/setting/index.js',
+        routes: './projects/workspace/app/setting/routes.js',
         version: ''
       },
       wslist: {
         match: /^\/workspace\/list(\/)?$/,
-        entry: './workspace/app/wslist/index.js',
-        routes: './workspace/app/wslist/routes.js',
+        entry: './projects/workspace/app/wslist/index.js',
+        routes: './projects/workspace/app/wslist/routes.js',
         version: '?2015', // in mose case we don't need to specific version number.
         jsBundles: ['browser-polyfill.js', 'reactkits.js', 'workspace/wslist/bundle.js${version}'],
         cssBundles: ['workspace/wslist/bundle.css${version}']

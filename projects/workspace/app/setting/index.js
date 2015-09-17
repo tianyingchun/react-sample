@@ -1,14 +1,14 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import Router from 'react-router';
-import { history } from '../../../utils/browser';
+import { history } from '../../../../utils/browser';
 import configureStore from '../configureStore';
 import routes from './routes';
 
 const initialState = window.__INITIAL_STATE__;
 
-// specific module reducers 'member'
-const store = configureStore('member', initialState);
+// specific module reducers 'setting'.
+const store = configureStore('setting', initialState);
 
 const rootElement = document.getElementById('react-view');
 

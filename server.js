@@ -7,7 +7,7 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { RoutingContext, match } from 'react-router';
 import createLocation from 'history/lib/createLocation'
-import configureStoreForWorkspace from './workspace/app/configureStore';
+import configureStoreForWorkspace from './projects/workspace/app/configureStore';
 
 import fetchComponentData from './utils/fetchComponentData';
 import HtmlHead from './shared/components/HtmlHead';
